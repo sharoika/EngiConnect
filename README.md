@@ -1,4 +1,4 @@
-<p align="center">
+<p align="left">
   <img src="https://github.com/sharoika/EngiConnect/assets/27317883/87d6fa41-76ec-4ea1-90f4-20258daf6282" width="200" height="200" alt="Image Alt Text">
 </p>
 
