@@ -1,3 +1,5 @@
+![vecteezy_gear-icon-vector-logo-illustration-suitable-for-web-design_7873010](https://github.com/sharoika/EngiConnect/assets/27317883/a1d4b78b-e4d4-4891-a777-2fd69c2c36ba)
+
 # EngiConnect
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
