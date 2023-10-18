@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/sharoika/EngiConnect/assets/27317883/a1d4b78b-e4d4-4891-a777-2fd69c2c36ba" width="100" height="100" alt="Image Alt Text">
+  <img src="https://github.com/sharoika/EngiConnect/assets/27317883/a1d4b78b-e4d4-4891-a777-2fd69c2c36ba" width="200" height="200" alt="Image Alt Text">
 </p>
 
 # EngiConnect
