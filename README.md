@@ -13,7 +13,9 @@ An application to connect Engineers, Academics, and Professionals with problems 
 
 #### Project Planning Documents
 A. [Low Fidelity Prototype](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/Lo-Fi%20Prototype.pdf)
+
 B. [High Fidelity Prototype](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/Hi-Fi%20Prototype.pdf)
+
 C. [Entity Relationship Diagram](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/MVP%201%20Entity%20Relationship%20Diagram.png)
 
 1. [Community Characteristics](https://github.com/sharoika/EngiConnect/blob/3424c165f27869a930037c7df2114e83c2dba125/Project%20Planning/PDFs/P01%20-%20Community%20Characteristics%20Orientation.pdf)
