@@ -12,9 +12,9 @@ An application to connect Engineers, Academics, and Professionals with problems 
 [EngiConnect Prototype](https://www.figma.com/proto/S18fQAAUFlLbFd9iSoSWCy/EngiConnect?type=design&node-id=6-78&t=3ncTEZephW6UAmal-1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=6%3A120&show-proto-sidebar=1&mode=desig)
 
 #### Project Planning Documents
-A. [Low Fidelity Prototype](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/Lo-Fi%20Prototype.pdf)
+A. [Low Fidelity Prototype PDF](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/Lo-Fi%20Prototype.pdf)
 
-B. [High Fidelity Prototype](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/Hi-Fi%20Prototype.pdf)
+B. [High Fidelity Prototype PDF](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/Hi-Fi%20Prototype.pdf)
 
 C. [Entity Relationship Diagram](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/MVP%201%20Entity%20Relationship%20Diagram.png)
 
