@@ -5,9 +5,9 @@
 # EngiConnect
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
-### Project Kanban Board
+#### Project Kanban Board (GitHub)
 [EngiConnect Kanban](https://github.com/users/sharoika/projects/1/views/2)
+#### High Fidelity Prototype (Figma)
+[EngiConnect Prototype](https://www.figma.com/proto/S18fQAAUFlLbFd9iSoSWCy/EngiConnect?type=design&node-id=6-78&t=3ncTEZephW6UAmal-1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=6%3A120&show-proto-sidebar=1&mode=desig)
 
-### Installation
-
-Placeholder Text. 
+#### Installation
