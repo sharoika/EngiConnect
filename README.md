@@ -5,6 +5,11 @@
 # EngiConnect
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
+#### Project Planning Video:
+#### Project Scrum 1 Video:
+#### Project Scrum 2 Video:
+#### Project Final Submission Video: 
+
 #### Project Kanban Board (GitHub)
 [EngiConnect Kanban](https://github.com/users/sharoika/projects/1/views/2)
 
