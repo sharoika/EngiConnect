@@ -6,6 +6,7 @@
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
 #### Project Planning Video:
+[Project Planning Video](https://youtu.be/eihzUJq9vtk)
 <!--- #### Project Scrum 1 Video:
 #### Project Scrum 2 Video:
 #### Project Final Submission Video: --->
