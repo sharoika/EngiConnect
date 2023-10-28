@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 
-function MainScreen({ navigation }) {
+function MainScreen({ navigation }: { navigation: any }) {
   return (
     <View>
       <Text>Main Screen</Text>
