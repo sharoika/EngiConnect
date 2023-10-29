@@ -3,20 +3,28 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import axios from "axios";
 
 function SignUpScreen({ navigation }: { navigation: any }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState(" ");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(" ");
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = () => {
-    setMessage(" ");
+
+    setErrorMessage(" ");
     setLoading(true);
 
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
+      setErrorMessage("Passwords do not match");
       setLoading(false);
       return;
     }
@@ -24,15 +32,17 @@ function SignUpScreen({ navigation }: { navigation: any }) {
     axios.post("http://localhost:3001/signup", { email, firstName, lastName, password })
       .then((response) => {
         if (response.status === 200) {
+          setErrorMessage("");
+          setSuccessMessage(response.data.message);
           setTimeout(() => {
             navigation.navigate('Login');
           }, 3000);
         } else {
-          setMessage(response.data.message);
+          setErrorMessage(response.data.message);
         }
       })
       .catch((error) => {
-        setMessage(error.response.data.message);
+        setErrorMessage(error.response.data.message);
       })
       .finally(() => {
         setLoading(false);
@@ -42,7 +52,8 @@ function SignUpScreen({ navigation }: { navigation: any }) {
   return (
     <View style={styles.container as any}>
       <Text style={styles.title as any}>EngiConnect Sign Up</Text>
-      <Text style={styles.errorText as any}>{message}</Text>
+      {errorMessage ? <Text style={styles.errorText as any}>{errorMessage}</Text> : null}
+      {successMessage ? <Text style={styles.successText as any}>{successMessage}</Text> : null }
       <TextInput
         style={styles.input as any}
         placeholder="Email"
@@ -86,6 +97,9 @@ function SignUpScreen({ navigation }: { navigation: any }) {
           <Text style={styles.buttonText as any}>Sign Up</Text>
         </TouchableOpacity>
       )}
+      <TouchableOpacity style={styles.backToLoginButton as any} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.buttonText as any}>Back to Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -95,13 +109,13 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    backgroundColor: 'aliceblue',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: '2%',
-    marginTop: '4%',
+    marginTop: '16%',
   },
   input: {
     width: '80%',
@@ -110,14 +124,14 @@ const styles = {
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
-    marginBottom: '2%',
+    marginBottom: '4%',
   },
   nameInputContainer: {
     width: '80%',
     height: '5%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: '2%',
+    marginBottom: '4%',
   },
   nameInput: {
     width: '48%',
@@ -128,10 +142,18 @@ const styles = {
     paddingLeft: 10,
   },
   signupButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'lightblue',
     padding: '2%',
     borderRadius: 5,
-    width: '30%',
+    width: '80%',
+    alignItems: 'center',
+    marginTop: '3%',
+  },
+  backToLoginButton: {
+    backgroundColor: 'grey',
+    padding: '2%',
+    borderRadius: 5,
+    width: '80%',
     alignItems: 'center',
     marginTop: '2%',
   },
@@ -142,6 +164,13 @@ const styles = {
   errorText: {
     fontSize: 16,
     color: 'red',
+    marginTop: '6%',
+    marginBottom: '6%',
+  },
+  successText: {
+    fontSize: 16,
+    color: 'green',
+    marginTop: '6%',
     marginBottom: '6%',
   },
 };

@@ -1,30 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, Button, TextInput, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 function LoginScreen({ navigation }: { navigation: any }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(" ");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkUserId = async () => {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        if (storedUserId) {
+          navigation.navigate('Main');
+        }
+      };
+      checkUserId();
+    }, [])
+  );
+
+
+  const handleLogin = async () => {
     setMessage(" ");
     setLoading(true);
-    axios.post("http://localhost:3001/login", { email, password })
-      .then((response) => {
-        if (response.status === 200) {
-          navigation.navigate('Main');
-        } else {
-          setMessage(response.data.message);
-        }
-      })
-      .catch((error) => {
-        setMessage(error.response.data.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await axios.post("http://localhost:3001/login", { email, password });
+      if (response.status === 200) {
+        await AsyncStorage.setItem('userId', response.data.userId);
+        navigation.navigate('Main');
+      } else {
+        setMessage(response.data.message);
+      }
+    } catch (error: any) {
+      setMessage(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,7 +74,7 @@ function LoginScreen({ navigation }: { navigation: any }) {
           <Text style={styles.buttonText as any}>Login</Text>
         </TouchableOpacity>
       )}
-      <TouchableOpacity style={styles.signupButton as any} onPress={() => navigation.navigate('SignUp')}>
+      <TouchableOpacity style={styles.signupButton as any} onPress={() => { navigation.navigate('SignUp'); setMessage(" "); }}>
         <Text style={styles.buttonText as any}>Sign Up</Text>
       </TouchableOpacity>
     </View>
@@ -66,16 +86,16 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    backgroundColor: 'aliceblue',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: '2%',
-    marginTop: '4%',
+    marginTop: '16%',
   },
   gearIcon: {
-    width: '80%',
+    width: '100%',
     height: '50%',
   },
   input: {
@@ -88,20 +108,20 @@ const styles = {
     marginBottom: '2%',
   },
   loginButton: {
-    backgroundColor: 'green',
+    backgroundColor: 'lightblue',
     padding: '2%',
     borderRadius: 5,
-    width: '30%',
+    width: '80%',
     alignItems: 'center',
-    marginTop: '2%',
+    marginTop: '3%',
   },
   signupButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'grey',
     padding: '2%',
     borderRadius: 5,
-    width: '30%',
+    width: '80%',
     alignItems: 'center',
-    marginTop: '1%',
+    marginTop: '2%',
   },
   buttonText: {
     color: 'white',

@@ -19,7 +19,7 @@ app.post("/login", async (req, res) => {
     const user = await usersCollection.findOne({ email, password });
     if (user) {
       console.log("Login successful.");
-      res.status(200).json({ message: "Login successful." });
+      res.status(200).json({ message: "Login successful.", userId: user._id});
     } else {
       console.log("Wrong username and password, please try again.");
       res.status(401).json({ message: "Wrong username and password, please try again." });
@@ -40,16 +40,20 @@ app.post('/signup', async (req, res) => {
     const usersCollection = client.db('engiconnect').collection('users');
     const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
+      console.log('User with this email already exists.');
       return res.status(400).json({ message: 'User with this email already exists.' });
     }
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!email.match(emailPattern)) {
+      console.log('Invalid email format.');
       return res.status(400).json({ message: 'Invalid email format.' });
     }
     if (!firstName || !lastName) {
+      console.log('First name and last name cannot be empty.');
       return res.status(400).json({ message: 'First name and last name cannot be empty.' });
     }
     if (password.length < 8) {
+      console.log('Password must be at least 8 characters.');
       return res.status(400).json({ message: 'Password must be at least 8 characters.' });
     }
     const newUser = {
@@ -60,8 +64,10 @@ app.post('/signup', async (req, res) => {
     };
     const result = await usersCollection.insertOne(newUser);
     if (result.insertedId) {
+      console.log("User registered successfully.");
       res.status(200).json({ message: 'User registered successfully.' });
     } else {
+      console.log("Failed to register user, please try again.");
       res.status(500).json({ message: 'Failed to register user, please try again.' });
     }
   } catch (error) {
