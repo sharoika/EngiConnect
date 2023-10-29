@@ -5,11 +5,11 @@ import axios from "axios";
 function LoginScreen({ navigation }: { navigation: any }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(" ");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
-    setMessage("");
+    setMessage(" ");
     setLoading(true);
     axios.post("http://localhost:3001/login", { email, password })
       .then((response) => {
@@ -29,10 +29,9 @@ function LoginScreen({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container as any}>
-      <Text style={styles.title as any}>EngiConnect</Text>
+      <Text style={styles.title as any}>EngiConnect Login</Text>
       <Image source={require('frontend/engiconnect/gear.png')} style={styles.gearIcon as any} />
-      {message && <Text style={styles.errorText}>{message}</Text>}
-      {!message && <View style={styles.space}></View>}
+      <Text style={styles.errorText as any}>{message}</Text>
       <TextInput
         style={styles.input as any}
         placeholder="Email"
@@ -47,8 +46,8 @@ function LoginScreen({ navigation }: { navigation: any }) {
         onChangeText={(text) => setPassword(text)}
       />
       {loading ? (
-        <View style={styles.loadingContainer as any}>
-          <Text style={styles.loadingText}>Logging in...</Text>
+        <View style={styles.loginButton as any}>
+          <Text style={styles.buttonText as any}>Logging in...</Text>
         </View>
       ) : (
         <TouchableOpacity style={styles.loginButton as any} onPress={handleLogin}>
@@ -70,39 +69,39 @@ const styles = {
     backgroundColor: 'white',
   },
   title: {
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 20,
+    marginBottom: '2%',
+    marginTop: '4%',
   },
   gearIcon: {
-    width: '100%',
+    width: '80%',
     height: '50%',
   },
   input: {
     width: '80%',
-    height: 40,
+    height: '5%',
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
-    marginBottom: 10,
+    marginBottom: '2%',
   },
   loginButton: {
     backgroundColor: 'green',
-    padding: 10,
+    padding: '2%',
     borderRadius: 5,
     width: '30%',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: '2%',
   },
   signupButton: {
     backgroundColor: 'blue',
-    padding: 10,
+    padding: '2%',
     borderRadius: 5,
     width: '30%',
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: '1%',
   },
   buttonText: {
     color: 'white',
@@ -111,19 +110,15 @@ const styles = {
   errorText: {
     fontSize: 16,
     color: 'red',
-    marginTop: 10,
-    marginBottom: 12,
-  },
-  space: {
-    height: 42,
+    marginBottom: '6%',
   },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: '2%',
   },
   loadingText: {
-    fontSize: 18,
+    fontSize: 12,
     color: 'green',
   },
 };
