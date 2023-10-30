@@ -24,14 +24,14 @@ B. [High Fidelity Prototype PDF](https://github.com/sharoika/EngiConnect/blob/18
 
 C. [Entity Relationship Diagram](https://github.com/sharoika/EngiConnect/blob/18ad520ce97a002a7e71b8691a122287fccddc30/Project%20Planning/PDFs/MVP%201%20Entity%20Relationship%20Diagram.png)
 
-1. [Community Characteristics](https://github.com/sharoika/EngiConnect/blob/3424c165f27869a930037c7df2114e83c2dba125/Project%20Planning/PDFs/P01%20-%20Community%20Characteristics%20Orientation.pdf)
-2. [Technology Configuration Inventory](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P02%20-%20Technology%20Configuration%20Inventory.pdf)
-3. [Business Case](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P03%20-%20Business%20Case.pdf)
-4. [Stakeholder Analysis](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P04%20-%20Stakeholder%20Analysis.pdf)
-5. [Drafting an Emerging Picture](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P05%20-%20Drafting%20an%20Emerging%20Picture.pdf)
-6. [Project Scope Statement](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P06%20-%20Project%20Scope%20Statement.pdf)
-7. [Project Requirements](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P07%20-%20Project%20Requirements.pdf)
-8. [Activity Based Schedule](https://github.com/sharoika/EngiConnect/blob/dc86ca16d81b9d92eed9399903c532cda6e048a0/Project%20Planning/PDFs/P08%20-%20Activity%20Based%20Schedule.pdf)
+1. Community Characteristics
+2. Technology Configuration Inventory
+3. Business Case
+4. Stakeholder Analysis
+5. Drafting an Emerging Picture
+6. Project Scope Statement
+7. Project Requirements
+8. Activity Based Schedule
 
 #### Installation
 
