@@ -12,14 +12,17 @@ function MainScreen({ navigation }: { navigation: any }) {
 
   const [selectedOption, setSelectedOption] = useState('Home');
   const [userId, setUserId] = useState(" ");
+  const [fullName, setFullName] = useState(" ");
 
   useEffect(() => {
     const checkUserId = async () => {
       const storedUserId = await AsyncStorage.getItem('userId');
-      if (!storedUserId) {
+      const storedFullName = await AsyncStorage.getItem('fullName');
+      if (!storedUserId || !storedFullName) {
         navigation.navigate('Login');
       } else {
         setUserId(storedUserId);
+        setFullName(storedFullName);
       }
     };
     checkUserId();
@@ -58,7 +61,7 @@ function MainScreen({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title as any}>EngiConnect</Text>
+      <Text style={styles.title as any}>{fullName}</Text>
 
       <View style={styles.overlay}>
         {renderContent()}
@@ -126,10 +129,10 @@ const styles = StyleSheet.create({
   icon: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'aliceblue', // Default background color
+    backgroundColor: 'aliceblue',
   },
   selectedIcon: {
-    backgroundColor: 'lightblue', // Darker background color for selected option
+    backgroundColor: 'lightblue',
   },
   iconText: {
     fontSize: 32,

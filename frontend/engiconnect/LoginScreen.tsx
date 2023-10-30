@@ -20,7 +20,8 @@ function LoginScreen({ navigation }: { navigation: any }) {
     React.useCallback(() => {
       const checkUserId = async () => {
         const storedUserId = await AsyncStorage.getItem('userId');
-        if (storedUserId) {
+        const storedFullName = await AsyncStorage.getItem('fullName');
+        if (storedUserId && storedFullName) {
           navigation.navigate('Main');
         }
       };
@@ -36,6 +37,7 @@ function LoginScreen({ navigation }: { navigation: any }) {
       const response = await axios.post("http://localhost:3001/login", { email, password });
       if (response.status === 200) {
         await AsyncStorage.setItem('userId', response.data.userId);
+        await AsyncStorage.setItem('fullName', response.data.fullName);
         navigation.navigate('Main');
       } else {
         setMessage(response.data.message);

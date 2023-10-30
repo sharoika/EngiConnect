@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -19,7 +19,7 @@ app.post("/login", async (req, res) => {
     const user = await usersCollection.findOne({ email, password });
     if (user) {
       console.log("Login successful.");
-      res.status(200).json({ message: "Login successful.", userId: user._id});
+      res.status(200).json({ message: "Login successful.", userId: user._id, fullName: (user.firstName + " " + user.lastName)});
     } else {
       console.log("Wrong username and password, please try again.");
       res.status(401).json({ message: "Wrong username and password, please try again." });
@@ -72,6 +72,56 @@ app.post('/signup', async (req, res) => {
     }
   } catch (error) {
     console.error('Error during signup:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  } finally {
+    await client.close();
+  }
+});
+
+app.get('/user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    await client.connect();
+    const usersCollection = client.db('engiconnect').collection('users');
+    const user = await usersCollection.findOne({_id: new ObjectId(userId)});
+    console.log(user);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  } finally {
+    await client.close();
+  }
+});
+
+app.put('/user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updatedUserData = req.body;
+    await client.connect();
+    const usersCollection = client.db('engiconnect').collection('users');
+    const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      const result = await usersCollection.updateOne(
+        { _id: new ObjectID(userId) },
+        { $set: updatedUserData }
+      );
+
+      if (result.modifiedCount === 1) {
+        res.status(200).json({ message: 'User data updated successfully' });
+      } else {
+        res.status(500).json({ message: 'Failed to update user data' });
+      }
+    }
+  } catch (error) {
+    console.error('Error updating user data:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
   } finally {
     await client.close();
