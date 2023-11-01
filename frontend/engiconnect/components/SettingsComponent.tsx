@@ -6,7 +6,6 @@ const SettingsComponent = ({ navigation }: { navigation: any }) => {
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
-    profileImage: '',
     degreeLevel: '',
     degreeType: '',
     isVerified: false,
@@ -73,37 +72,12 @@ const SettingsComponent = ({ navigation }: { navigation: any }) => {
     }
   };
 
-  const handleProfileImageUpload = () => {
-    const options = {
-      mediaType: 'photo', // Set to 'photo' to capture images
-    };
-
-  };
-
   return (
     <View style={styles.container}>
       {isLoading ? (
         <ActivityIndicator size="large" color="blue" style={styles.loadingIndicator} />
       ) : (
         <View style={styles.userDataContainer}>
-          <View style={styles.imageContainer}>
-            {userData.profileImage ? (
-              <TouchableOpacity onPress={handleProfileImageUpload}>
-                <Image
-                  source={{ uri: userData.profileImage }}
-                  style={styles.profileImage}
-                  onError={(e) => console.log('Image load error', e.nativeEvent.error)}
-                />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={handleProfileImageUpload}
-                style={styles.takePictureButton}
-              >
-                <Text style={styles.takePictureText}>Take a Picture</Text>
-              </TouchableOpacity>
-  )}
-          </View>
           <View style={styles.detailsContainer}>
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>First Name</Text>
@@ -171,13 +145,13 @@ const SettingsComponent = ({ navigation }: { navigation: any }) => {
               {userData.isVerified ? 'Verified ✅' : 'Not Verified ❌'}
             </Text>
             {!userData.isVerified && (
-    <TouchableOpacity
-      style={styles.verifyButton}
-      onPress={handleVerifiedStatusClick}
-    >
-      <Text style={styles.buttonText}>Verify Now</Text>
-    </TouchableOpacity>
-  )}
+              <TouchableOpacity
+                style={styles.verifyButton}
+                onPress={handleVerifiedStatusClick}
+              >
+                <Text style={styles.buttonText}>Verify Now</Text>
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.buttonContainer}>
             {isEditing ? (
@@ -201,22 +175,10 @@ const SettingsComponent = ({ navigation }: { navigation: any }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: 'white',
-  },
-  imageContainer: {
-    width: '100%',
-    marginTop: 16,
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    justifyContent: 'center', // Center vertically
   },
   userDataContainer: {
-    flex: 0.95,
     alignItems: 'center',
   },
   loadingIndicator: {
@@ -226,17 +188,18 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 32,
   },
   input: {
     width: '100%',
-    height: 40,
+    height: 44,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 16,
     paddingHorizontal: 8,
   },
   buttonContainer: {
+    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
@@ -251,16 +214,16 @@ const styles = StyleSheet.create({
   },
   editButton: {
     backgroundColor: 'lightblue',
-    padding: 8,
-    margin: 8,
+    padding: 12,
+    margin: 4,
     borderRadius: 5,
     width: '48%',
     alignItems: 'center',
   },
   logoutButton: {
     backgroundColor: 'grey',
-    padding: 8,
-    margin: 8,
+    padding: 12,
+    margin: 4,
     borderRadius: 5,
     width: '48%',
     alignItems: 'center',
@@ -273,7 +236,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   inputLabel: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   verifyContainer: {
@@ -285,21 +248,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
   },
-  takePictureButton: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderColor: 'lightblue',
-    borderWidth: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  takePictureText: {
-    fontSize: 16,
-  },
   verifyButton: {
     backgroundColor: 'red',
-    padding: 8,
+    padding: 10,
     borderRadius: 5,
     width: '94%',
     alignItems: 'center',

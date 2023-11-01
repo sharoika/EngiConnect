@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SettingsComponent from './components/SettingsComponent';
+import PostReplyComponent from './components/PostReplyComponent';
+import IssuesComponent from './components/IssuesComponent'; // Import the IssuesComponent
+import SDGComponent from './components/SDGComponent';
 
 function MainScreen({ navigation }: { navigation: any }) {
   React.useLayoutEffect(() => {
@@ -10,7 +13,7 @@ function MainScreen({ navigation }: { navigation: any }) {
     });
   }, [navigation]);
 
-  const [selectedOption, setSelectedOption] = useState('Home');
+  const [selectedOption, setSelectedOption] = useState('SDG');
   const [userId, setUserId] = useState(" ");
   const [fullName, setFullName] = useState(" ");
 
@@ -34,16 +37,17 @@ function MainScreen({ navigation }: { navigation: any }) {
 
   const renderContent = () => {
     switch (selectedOption) {
-      case 'Home':
+      case 'SDG':
         return (
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text>🌐</Text>
+          <View style={styles.content}>
+            <SDGComponent selectedOption={setSelectedOption}/>
           </View>
         );
-      case 'Top Issues':
+      case 'Issues':
         return (
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text>🔝</Text>
+          <View style={styles.content}>
+            <IssuesComponent type="Top" />
+            <PostReplyComponent type="Post" />
           </View>
         );
       case 'Settings':
@@ -52,52 +56,52 @@ function MainScreen({ navigation }: { navigation: any }) {
         );
       default:
         return (
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <View style={styles.content}>
             <Text>No content selected</Text>
           </View>
         );
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title as any}>{fullName}</Text>
+      <Text style={styles.title}>{fullName}</Text>
 
       <View style={styles.overlay}>
         {renderContent()}
       </View>
 
       <View style={styles.navigation}>
-      <TouchableHighlight
-        style={[
-          styles.icon,
-          selectedOption === 'Home' ? styles.selectedIcon : null,
-        ]}
-        onPress={() => handleOptionSelect('Home')}
-      >
-        <Text style={styles.iconText}>🌐</Text>
-      </TouchableHighlight>
+        <TouchableHighlight
+          style={[
+            styles.icon,
+            selectedOption === 'SDG' ? styles.selectedIcon : null,
+          ]}
+          onPress={() => handleOptionSelect('SDG')}
+        >
+          <Text style={styles.iconText}>🌐</Text>
+        </TouchableHighlight>
 
-      <TouchableHighlight
-        style={[
-          styles.icon,
-          selectedOption === 'Top Issues' ? styles.selectedIcon : null,
-        ]}
-        onPress={() => handleOptionSelect('Top Issues')}
-      >
-        <Text style={styles.iconText}>🔝</Text>
-      </TouchableHighlight>
+        <TouchableHighlight
+          style={[
+            styles.icon,
+            selectedOption === 'Issues' ? styles.selectedIcon : null,
+          ]}
+          onPress={() => handleOptionSelect('Issues')}
+        >
+          <Text style={styles.iconText}>🔝</Text>
+        </TouchableHighlight>
 
-      <TouchableHighlight
-        style={[
-          styles.icon,
-          selectedOption === 'Settings' ? styles.selectedIcon : null,
-        ]}
-        onPress={() => handleOptionSelect('Settings')}
-      >
-        <Text style={styles.iconText}>⚙️</Text>
-      </TouchableHighlight>
-    </View>
+        <TouchableHighlight
+          style={[
+            styles.icon,
+            selectedOption === 'Settings' ? styles.selectedIcon : null,
+          ]}
+          onPress={() => handleOptionSelect('Settings')}
+        >
+          <Text style={styles.iconText}>⚙️</Text>
+        </TouchableHighlight>
+      </View>
     </View>
   );
 }
@@ -105,7 +109,6 @@ function MainScreen({ navigation }: { navigation: any }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
     backgroundColor: 'aliceblue',
     alignItems: 'center',
   },
@@ -117,8 +120,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end', // Right-align the content vertically
   },
   navigation: {
     flexDirection: 'row',
@@ -139,8 +141,10 @@ const styles = StyleSheet.create({
     padding: '4%',
   },
   overlay: {
-    flex: 6,
+    flex: 2,
     width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'white',
   },
 });
