@@ -9,6 +9,7 @@ An application to connect Engineers, Academics, and Professionals with problems 
 [Project Planning Video](https://youtu.be/eihzUJq9vtk)
 ### Project Scrum 1 Video:
 [Scrum 1 Demo Video](https://www.youtube.com/watch?time_continue=1&v=aKptyWq4gYU&embeds_referring_euri=https%3A%2F%2Fdocs.google.com%2F&embeds_referring_origin=https%3A%2F%2Fdocs.google.com&source_ve_path=Mjg2NjY&feature=emb_logo)
+
 [Scrum 1 Document](https://github.com/sharoika/EngiConnect/blob/337dcfb4767d0528bfc717dba6bfc827e26b507a/Scrums/Scrum%201/Project%20Status%20Report.pdf)
 <!---#### Project Scrum 2 Video:
 #### Project Final Submission Video: --->
