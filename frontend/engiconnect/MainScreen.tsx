@@ -3,7 +3,7 @@ import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SettingsComponent from './components/SettingsComponent';
 import PostReplyComponent from './components/PostReplyComponent';
-import IssuesComponent from './components/IssuesComponent'; // Import the IssuesComponent
+import IssuesComponent from './components/IssuesComponent';
 import SDGComponent from './components/SDGComponent';
 
 function MainScreen({ navigation }: { navigation: any }) {
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    alignItems: 'flex-end', // Right-align the content vertically
+    alignItems: 'flex-end',
   },
   navigation: {
     flexDirection: 'row',
