@@ -47,7 +47,7 @@ function MainScreen({ navigation }: { navigation: any }) {
         return (
           <View style={styles.content}>
             <IssuesComponent type="Top" />
-            <PostReplyComponent type="Post" />
+            <PostReplyComponent type="Post" navigation={navigation} />
           </View>
         );
       case 'Settings':

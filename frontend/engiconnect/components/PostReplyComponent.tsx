@@ -1,16 +1,20 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-const PostReplyComponent = ({ type }: { type: any }) => {
+function PostReplyComponent({ type, navigation }: { type: string, navigation: any }) {
   const backgroundColor = type === 'Post' ? 'green' : 'blue';
   const text = type === 'Post' ? 'Post' : 'Reply';
 
+  const handleNavigateToWriteScreen = () => {
+    navigation.navigate('Write', { type });
+  };
+
   return (
-    <TouchableOpacity style={[styles.postReply, { backgroundColor }]}>
+    <TouchableOpacity style={[styles.postReply, { backgroundColor }]} onPress={handleNavigateToWriteScreen}>
       <Text style={styles.postReplyText}>{text}</Text>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   postReply: {

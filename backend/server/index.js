@@ -128,6 +128,72 @@ app.put('/user/:id', async (req, res) => {
   }
 });
 
+app.post('/issue', async (req, res) => {
+  try {
+    const { subjectText, bodyText, type } = req.body; // Assuming you're sending these as JSON in the request body
+
+    await client.connect();
+    const issuesCollection = client.db('engiconnect').collection('Issues');
+
+    const newIssue = {
+      subject: subjectText,
+      body: bodyText,
+      type,
+    };
+
+    const result = await issuesCollection.insertOne(newIssue);
+
+    if (result.insertedId) {
+      res.status(200).json({ message: `${type} created successfully` });
+    } else {
+      res.status(500).json({ message: 'Failed to create issue' });
+    }
+  } catch (error) {
+    console.error('Error creating issue:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  } finally {
+    await client.close();
+  }
+});
+
+app.put('/issue/:id', async (req, res) => {
+  try {
+    const issueId = req.params.id;
+    const { subjectText, bodyText, type } = req.body; 
+
+    await client.connect();
+    const issuesCollection = client.db('engiconnect').collection('Issues');
+
+    const existingIssue = await issuesCollection.findOne({ _id: new ObjectId(issueId) });
+
+    if (!existingIssue) {
+      res.status(404).json({ message: 'Issue not found' });
+    } else {
+      const updatedIssue = {
+        subject: subjectText,
+        body: bodyText,
+        type,
+      };
+
+      const result = await issuesCollection.updateOne(
+        { _id: new ObjectId(issueId) },
+        { $set: updatedIssue }
+      );
+
+      if (result.modifiedCount === 1) {
+        res.status(200).json({ message: `${type} updated successfully` });
+      } else {
+        res.status(500).json({ message: 'Failed to update issue' });
+      }
+    }
+  } catch (error) {
+    console.error('Error updating issue:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  } finally {
+    await client.close();
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
