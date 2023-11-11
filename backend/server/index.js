@@ -128,17 +128,36 @@ app.put('/user/:id', async (req, res) => {
   }
 });
 
+app.get('/issues', async (req, res) => {
+  try {
+    await client.connect();
+    const issuesCollection = client.db('engiconnect').collection('issues');
+
+    const query = {};
+
+    const issues = await issuesCollection.find(query).toArray();
+
+    res.status(200).json({ issues });
+  } catch (error) {
+    console.error('Error getting issues:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  } finally {
+    await client.close();
+  }
+});
+
 app.post('/issue', async (req, res) => {
   try {
-    const { subjectText, bodyText, type } = req.body; // Assuming you're sending these as JSON in the request body
+    const { subjectText, bodyText, type, selectedSDGs } = req.body;
 
     await client.connect();
-    const issuesCollection = client.db('engiconnect').collection('Issues');
+    const issuesCollection = client.db('engiconnect').collection('issues');
 
     const newIssue = {
       subject: subjectText,
       body: bodyText,
       type,
+      selectedSDGs,
     };
 
     const result = await issuesCollection.insertOne(newIssue);
@@ -159,10 +178,10 @@ app.post('/issue', async (req, res) => {
 app.put('/issue/:id', async (req, res) => {
   try {
     const issueId = req.params.id;
-    const { subjectText, bodyText, type } = req.body; 
+    const { subjectText, bodyText, type, selectedSDGs } = req.body; 
 
     await client.connect();
-    const issuesCollection = client.db('engiconnect').collection('Issues');
+    const issuesCollection = client.db('engiconnect').collection('issues');
 
     const existingIssue = await issuesCollection.findOne({ _id: new ObjectId(issueId) });
 
@@ -173,6 +192,7 @@ app.put('/issue/:id', async (req, res) => {
         subject: subjectText,
         body: bodyText,
         type,
+        selectedSDGs,
       };
 
       const result = await issuesCollection.updateOne(

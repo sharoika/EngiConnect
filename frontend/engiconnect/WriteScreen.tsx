@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, Button, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Modal, FlatList } from "react-native";
 
 function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
   React.useLayoutEffect(() => {
@@ -12,6 +12,46 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
 
   const [subjectText, setSubjectText] = useState(subject);
   const [bodyText, setBodyText] = useState(body);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedSDGs, setSelectedSDGs] = useState<string[]>([]);
+
+  const sdgs = [
+    'SDG 1: No Poverty',
+    'SDG 2: Zero Hunger',
+    'SDG 3: Good Health and Well-being',
+    'SDG 4: Quality Education',
+    'SDG 5: Gender Equality',
+    'SDG 6: Clean Water and Sanitation',
+    'SDG 7: Affordable and Clean Energy',
+    'SDG 8: Decent Work and Economic Growth',
+    'SDG 9: Industry, Innovation, and Infrastructure',
+    'SDG 10: Reduced Inequality',
+    'SDG 11: Sustainable Cities and Communities',
+    'SDG 12: Responsible Consumption and Production',
+    'SDG 13: Climate Action',
+    'SDG 14: Life Below Water',
+    'SDG 15: Life on Land',
+    'SDG 16: Peace, Justice, and Strong Institutions',
+    'SDG 17: Partnerships for the Goals',
+  ];
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+
+  const handleSelectSDG = (item: string) => {
+    const updatedSDGs = [...selectedSDGs];
+
+    if (updatedSDGs.includes(item)) {
+      // Deselect the SDG if it's already selected
+      updatedSDGs.splice(updatedSDGs.indexOf(item), 1);
+    } else {
+      // Select the SDG if it's not selected
+      updatedSDGs.push(item);
+    }
+
+    setSelectedSDGs(updatedSDGs);
+  };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -24,8 +64,8 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
       subjectText,
       bodyText,
       type,
+      selectedSDGs,
     };
-    console.log(postData);
 
     fetch(apiUrl, {
       method: 'POST',
@@ -45,19 +85,19 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
   };
 
   return (
-    <View style={styles.container as any}>
-      <Text style={styles.title as any}>{type}</Text>
-      <Text style={styles.label as any}>Subject:</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{type}</Text>
+      <Text style={styles.label}>Subject:</Text>
       <TextInput
-        style={styles.subjectInput as any}
+        style={styles.subjectInput}
         value={subjectText}
         onChangeText={(text) => setSubjectText(text)}
         placeholder="Enter subject"
       />
 
-      <Text style={styles.label as any}>Body:</Text>
+      <Text style={styles.label}>Body:</Text>
       <TextInput
-        style={styles.bodyInput as any}
+        style={styles.bodyInput}
         value={bodyText}
         onChangeText={(text) => setBodyText(text)}
         placeholder="Enter body"
@@ -65,12 +105,46 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
         numberOfLines={4}
       />
 
-      <View style={styles.buttonContainer as any}>
-        <TouchableOpacity style={styles.closeButton as any} onPress={handleGoBack}>
-          <Text style={styles.buttonText as any}>Back</Text>
+      <Text style={styles.label}>Select SDGs:</Text>
+      <TouchableOpacity style={styles.dropdownButton} onPress={toggleModal}>
+        {selectedSDGs.length > 0 ? (
+          selectedSDGs.map((sdg, index) => (
+            <Text key={index}>{sdg}</Text>
+          ))
+        ) : (
+          <Text>Select SDGs...</Text>
+        )}
+      </TouchableOpacity>
+
+      <Modal visible={isModalVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <FlatList
+            data={sdgs}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.modalItem,
+                  selectedSDGs.includes(item) && { backgroundColor: 'lightblue' },
+                ]}
+                onPress={() => handleSelectSDG(item)}
+              >
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
+          <TouchableOpacity style={styles.modalCloseButton} onPress={toggleModal}>
+            <Text style={styles.buttonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.closeButton} onPress={handleGoBack}>
+          <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitButton as any} onPress={handlePostReply}>
-          <Text style={styles.buttonText as any}>{type === "Post" ? "Post" : "Reply"}</Text>
+        <TouchableOpacity style={styles.submitButton} onPress={handlePostReply}>
+          <Text style={styles.buttonText}>{type === "Post" ? "Post" : "Reply"}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -98,7 +172,7 @@ const styles = {
   },
   subjectInput: {
     width: "80%",
-    height: "20%",
+    height: 40,
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
@@ -108,13 +182,46 @@ const styles = {
   },
   bodyInput: {
     width: "80%",
-    flex: 0.8,
+    height: 80,
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
     marginBottom: 16,
     backgroundColor: "white",
+  },
+  dropdownButton: {
+    width: "80%",
+    minHeight: 40,  // Set a minimum height to prevent it from collapsing when there are no selected SDGs
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    marginBottom: 16,
+    justifyContent: 'center',
+    backgroundColor: "white",
+  },
+  modalContainer: {
+    flex: 1,
+    paddingTop: 60,
+    paddingBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+    width: '100%',
+    alignItems: 'center',
+  },
+  modalCloseButton: {
+    backgroundColor: 'red',
+    padding: 12,
+    borderRadius: 5,
+    marginTop: 20,
+    width: '80%',
+    alignItems: 'center',
   },
   buttonContainer: {
     flexDirection: "row",
