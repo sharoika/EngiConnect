@@ -84,7 +84,6 @@ app.get('/user/:id', async (req, res) => {
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({_id: new ObjectId(userId)});
-    console.log(user);
     if (user) {
       res.status(200).json(user);
     } else {
@@ -105,13 +104,13 @@ app.put('/user/:id', async (req, res) => {
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
-
     if (!user) {
       res.status(404).json({ message: 'User not found' });
     } else {
+      const { _id, ...userDataWithoutId } = updatedUserData;
       const result = await usersCollection.updateOne(
-        { _id: new ObjectID(userId) },
-        { $set: updatedUserData }
+        { _id: new ObjectId(userId) },
+        { $set: userDataWithoutId }
       );
 
       if (result.modifiedCount === 1) {
@@ -175,44 +174,44 @@ app.post('/issue', async (req, res) => {
   }
 });
 
-app.put('/issue/:id', async (req, res) => {
-  try {
-    const issueId = req.params.id;
-    const { subjectText, bodyText, type, selectedSDGs } = req.body; 
+// app.put('/issue/:id', async (req, res) => {
+//   try {
+//     const issueId = req.params.id;
+//     const { subjectText, bodyText, type, selectedSDGs } = req.body; 
 
-    await client.connect();
-    const issuesCollection = client.db('engiconnect').collection('issues');
+//     await client.connect();
+//     const issuesCollection = client.db('engiconnect').collection('issues');
 
-    const existingIssue = await issuesCollection.findOne({ _id: new ObjectId(issueId) });
+//     const existingIssue = await issuesCollection.findOne({ _id: new ObjectId(issueId) });
 
-    if (!existingIssue) {
-      res.status(404).json({ message: 'Issue not found' });
-    } else {
-      const updatedIssue = {
-        subject: subjectText,
-        body: bodyText,
-        type,
-        selectedSDGs,
-      };
+//     if (!existingIssue) {
+//       res.status(404).json({ message: 'Issue not found' });
+//     } else {
+//       const updatedIssue = {
+//         subject: subjectText,
+//         body: bodyText,
+//         type,
+//         selectedSDGs,
+//       };
 
-      const result = await issuesCollection.updateOne(
-        { _id: new ObjectId(issueId) },
-        { $set: updatedIssue }
-      );
+//       const result = await issuesCollection.updateOne(
+//         { _id: new ObjectId(issueId) },
+//         { $set: updatedIssue }
+//       );
 
-      if (result.modifiedCount === 1) {
-        res.status(200).json({ message: `${type} updated successfully` });
-      } else {
-        res.status(500).json({ message: 'Failed to update issue' });
-      }
-    }
-  } catch (error) {
-    console.error('Error updating issue:', error);
-    res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
-  }
-});
+//       if (result.modifiedCount === 1) {
+//         res.status(200).json({ message: `${type} updated successfully` });
+//       } else {
+//         res.status(500).json({ message: 'Failed to update issue' });
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Error updating issue:', error);
+//     res.status(500).json({ message: 'Internal server error, please try again' });
+//   } finally {
+//     await client.close();
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
