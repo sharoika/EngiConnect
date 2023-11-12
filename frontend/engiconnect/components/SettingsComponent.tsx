@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SettingsComponent = ({ navigation }: { navigation: any }) => {
+const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation: any, isLoading: any, setIsLoading: any }) => {
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -14,10 +14,8 @@ const SettingsComponent = ({ navigation }: { navigation: any }) => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const loadUserData = useCallback(async () => {
-    setIsLoading(true);
     try {
       const userId = await AsyncStorage.getItem('userId');
       const response = await fetch(`http://localhost:3001/user/${userId}`);
@@ -46,8 +44,6 @@ const SettingsComponent = ({ navigation }: { navigation: any }) => {
   };
 
   const handleVerifiedStatusClick = async () => {
-    // Handle clicking on the verified status box
-    // You can add logic to toggle the verified status and update the UI
   };
 
   const handleSave = async () => {

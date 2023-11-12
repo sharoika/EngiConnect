@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-const SDGComponent = ({ selectedOption }) => {
+const SDGComponent = ({ selectedOption, setIsLoading }: { selectedOption: any, setIsLoading: any }) => {
   const sdgs = [
     'SDG 1: No Poverty',
     'SDG 2: Zero Hunger',
@@ -24,6 +24,7 @@ const SDGComponent = ({ selectedOption }) => {
 
   const handleSDGSelect = (selectedSDG) => {
     // Use navigation.navigate to switch to the "Issues" screen
+    setIsLoading(true);
     selectedOption("Issues");
   };
 
@@ -49,10 +50,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center', // Stretch to reach both sides
+    justifyContent: 'center',
   },
   sdgButton: {
-    flexBasis: '96%', // Adjust as needed to control the width of the buttons
+    flexBasis: '96%',
     padding: 6,
     marginTop: 8,
     borderWidth: 1,

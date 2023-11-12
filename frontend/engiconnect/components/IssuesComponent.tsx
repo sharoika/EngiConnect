@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-const IssuesComponent = ({ type }: { type: any }) => {
-  const [issues, setIssues] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface Issue {
+  _id: string;
+  subject: string;
+  body: string;
+  selectedSDGs: string[];
+}
+
+const IssuesComponent = ({ isLoading, setIsLoading}: { isLoading: any, setIsLoading: any }) => {
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    // Fetch issues from the API
     const fetchIssues = async () => {
       try {
         const response = await fetch('http://localhost:3001/issues');
@@ -24,40 +32,50 @@ const IssuesComponent = ({ type }: { type: any }) => {
     };
 
     fetchIssues();
-  }, []);
+  }, [isFocused]);
 
-  // Crop text at 150 characters
-  const cropText = (text) => {
+  const cropText = (text: string) => {
     if (text.length > 100) {
       return text.substring(0, 100) + '...';
     }
     return text;
   };
 
+  const navigateToReadScreen = (issueId: string) => {
+    console.log(issueId);
+    navigation.navigate('Read', { issueId } );
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View>
       {isLoading ? (
         <ActivityIndicator size="large" color="blue" style={styles.loadingIndicator} />
       ) : (
-        issues.map((issue, index) => (
-          <View key={index} style={styles.issueBox}>
-            <Text style={styles.issueTitle}>{issue.subject}</Text>
-            <Text style={styles.issueDescription} numberOfLines={3}>
-              {cropText(issue.body)}
-            </Text>
-            <View style={styles.sdgsContainer}>
-              {issue.selectedSDGs.map((sdg, sdgIndex) => (
-                <Text key={sdgIndex} style={styles.sdg}>
-                  {sdg}
-                </Text>
-              ))}
-            </View>
-          </View>
-        ))
+        <ScrollView contentContainerStyle={styles.container}>
+          {issues.map((issue, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.issueBox}
+              onPress={() => navigateToReadScreen(issue._id)}
+            >
+              <Text style={styles.issueTitle}>{issue.subject}</Text>
+              <Text style={styles.issueDescription} numberOfLines={3}>
+                {cropText(issue.body)}
+              </Text>
+              <View style={styles.sdgsContainer}>
+                {issue.selectedSDGs.map((sdg, sdgIndex) => (
+                  <Text key={sdgIndex} style={styles.sdg}>
+                    {sdg}
+                  </Text>
+                ))}
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       )}
-    </ScrollView>
-  );
-};
+    </View>
+  ); 
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -96,13 +114,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderRadius: 4,
     minWidth: 75,
-    maxWidth: 200, // Adjust as needed
+    maxWidth: 400,
     maxHeight: 24,
     textAlign: 'center',
     overflow: 'hidden',
   },
   loadingIndicator: {
-    flex: 1,
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },

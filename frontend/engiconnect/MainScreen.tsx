@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SettingsComponent from './components/SettingsComponent';
-import PostReplyComponent from './components/PostReplyComponent';
+import PostReplyComponent from './components/PostComponent';
 import IssuesComponent from './components/IssuesComponent';
 import SDGComponent from './components/SDGComponent';
 
@@ -14,6 +14,10 @@ function MainScreen({ navigation }: { navigation: any }) {
   }, [navigation]);
 
   const [selectedOption, setSelectedOption] = useState('SDG');
+
+  const [SDGFilter, setSDGFilter] = useState(" ");
+  const [isLoading, setIsLoading] = useState(true);
+
   const [userId, setUserId] = useState(" ");
   const [fullName, setFullName] = useState(" ");
 
@@ -32,6 +36,7 @@ function MainScreen({ navigation }: { navigation: any }) {
   }, []);
 
   const handleOptionSelect = (option: any) => {
+    setIsLoading(true);
     setSelectedOption(option);
   };
 
@@ -40,19 +45,19 @@ function MainScreen({ navigation }: { navigation: any }) {
       case 'SDG':
         return (
           <View style={styles.content}>
-            <SDGComponent selectedOption={setSelectedOption}/>
+            <SDGComponent selectedOption={setSelectedOption} setIsLoading={setIsLoading} />
           </View>
         );
       case 'Issues':
         return (
           <View style={styles.content}>
-            <IssuesComponent type="Top" />
-            <PostReplyComponent type="Post" navigation={navigation} />
+            <IssuesComponent isLoading={isLoading} setIsLoading={setIsLoading} />
+            <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} />
           </View>
         );
       case 'Settings':
         return (
-          <SettingsComponent navigation={navigation} />
+          <SettingsComponent navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} />
         );
       default:
         return (
@@ -89,7 +94,7 @@ function MainScreen({ navigation }: { navigation: any }) {
           ]}
           onPress={() => handleOptionSelect('Issues')}
         >
-          <Text style={styles.iconText}>🔝</Text>
+          <Text style={styles.iconText}>🗒️</Text>
         </TouchableHighlight>
 
         <TouchableHighlight

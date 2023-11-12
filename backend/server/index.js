@@ -19,7 +19,7 @@ app.post("/login", async (req, res) => {
     const user = await usersCollection.findOne({ email, password });
     if (user) {
       console.log("Login successful.");
-      res.status(200).json({ message: "Login successful.", userId: user._id, fullName: (user.firstName + " " + user.lastName)});
+      res.status(200).json({ message: "Login successful.", userId: user._id, fullName: (user.firstName + " " + user.lastName) });
     } else {
       console.log("Wrong username and password, please try again.");
       res.status(401).json({ message: "Wrong username and password, please try again." });
@@ -83,7 +83,7 @@ app.get('/user/:id', async (req, res) => {
     const userId = req.params.id;
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
-    const user = await usersCollection.findOne({_id: new ObjectId(userId)});
+    const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if (user) {
       res.status(200).json(user);
     } else {
@@ -145,6 +145,30 @@ app.get('/issues', async (req, res) => {
   }
 });
 
+app.get('/issue/:id', async (req, res) => {
+  const issueId = req.params.id;
+
+  try {
+    await client.connect();
+    const issuesCollection = client.db('engiconnect').collection('issues');
+
+    const query = { _id: ObjectId(issueId) };
+
+    const issue = await issuesCollection.findOne(query);
+
+    if (issue) {
+      res.status(200).json({ issue });
+    } else {
+      res.status(404).json({ message: 'Issue not found' });
+    }
+  } catch (error) {
+    console.error('Error getting issue by ID:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  } finally {
+    await client.close();
+  }
+});
+
 app.post('/issue', async (req, res) => {
   try {
     const { subjectText, bodyText, type, selectedSDGs } = req.body;
@@ -162,7 +186,7 @@ app.post('/issue', async (req, res) => {
     const result = await issuesCollection.insertOne(newIssue);
 
     if (result.insertedId) {
-      res.status(200).json({ message: `${type} created successfully` });
+      res.status(200).json({ message: `${type} created successfully`, _id: result.insertedId });
     } else {
       res.status(500).json({ message: 'Failed to create issue' });
     }

@@ -77,7 +77,9 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        navigation.goBack();
+        const issueId = data._id;
+        console.log(issueId );
+        navigation.navigate('Read', { issueId } );
       })
       .catch((error) => {
         console.error(error);
