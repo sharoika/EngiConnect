@@ -104,19 +104,30 @@ app.put('/user/:id', async (req, res) => {
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+
     if (!user) {
       res.status(404).json({ message: 'User not found' });
     } else {
       const { _id, ...userDataWithoutId } = updatedUserData;
-      const result = await usersCollection.updateOne(
-        { _id: new ObjectId(userId) },
-        { $set: userDataWithoutId }
+
+      const isDataUpdated = Object.keys(userDataWithoutId).every(
+        key => user[key] === userDataWithoutId[key]
       );
 
-      if (result.modifiedCount === 1) {
-        res.status(200).json({ message: 'User data updated successfully' });
+      if (isDataUpdated) {
+        res.status(200).json({ message: 'User data is already up to date' });
       } else {
-        res.status(500).json({ message: 'Failed to update user data' });
+        userDataWithoutId.isVerified = false;
+        const result = await usersCollection.updateOne(
+          { _id: new ObjectId(userId) },
+          { $set: userDataWithoutId }
+        );
+
+        if (result.modifiedCount === 1) {
+          res.status(200).json({ message: 'User data updated successfully' });
+        } else {
+          res.status(500).json({ message: 'Failed to update user data' });
+        }
       }
     }
   } catch (error) {

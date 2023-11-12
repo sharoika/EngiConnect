@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Button, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation: any, isLoading: any, setIsLoading: any }) => {
+const SettingsComponent = ({ navigation, isLoading, setIsLoading, setFullName }: { navigation: any, isLoading: any, setIsLoading: any, setFullName: any }) => {
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -14,6 +14,9 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [messageColor, setMessageColor] = useState('green');
 
   const loadUserData = useCallback(async () => {
     try {
@@ -22,6 +25,7 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
+        setFullName(data.firstName + " " + data.lastName);
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -44,6 +48,7 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation
   };
 
   const handleVerifiedStatusClick = async () => {
+    showMessage('Verification status updated', 'green');
   };
 
   const handleSave = async () => {
@@ -60,12 +65,25 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation
       if (response.ok) {
         setIsEditing(false);
         loadUserData();
+        showMessage('Success updating user data!', 'green');
       } else {
         console.error('Error saving user data:', response.status);
+        showMessage('Error updating user data', 'red');
       }
     } catch (error) {
       console.error('Error saving user data:', error);
+      showMessage('Error updating user data', 'red');
     }
+  };
+
+  const showMessage = (text: React.SetStateAction<string>, color: React.SetStateAction<string>) => {
+    setMessage(text);
+    setMessageColor(color);
+    setIsMessageVisible(true);
+
+    setTimeout(() => {
+      setIsMessageVisible(false);
+    }, 3000);
   };
 
   return (
@@ -163,6 +181,13 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
           </View>
+          {isMessageVisible && (
+            <Modal transparent={true} animationType="fade">
+              <View style={styles.messageContainer}>
+                <Text style={{ color: messageColor, textAlign: 'center', fontSize: 20}}>{message}</Text>
+              </View>
+            </Modal>
+          )}
         </View>
       )}
     </View>
@@ -172,7 +197,8 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading }: { navigation
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    justifyContent: 'center', // Center vertically
+    justifyContent: 'center',
+    verticalAlign: 'middle',
   },
   userDataContainer: {
     alignItems: 'center',
@@ -195,17 +221,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   buttonContainer: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     alignItems: 'center',
   },
   saveButton: {
-    backgroundColor: 'lightblue',
-    padding: 8,
+    backgroundColor: 'lightgreen',
+    padding: 12,
+    margin: 4,
     borderRadius: 5,
-    width: '48%',
+    width: '46%',
     alignItems: 'center',
   },
   editButton: {
@@ -213,7 +240,7 @@ const styles = StyleSheet.create({
     padding: 12,
     margin: 4,
     borderRadius: 5,
-    width: '48%',
+    width: '46%',
     alignItems: 'center',
   },
   logoutButton: {
@@ -221,7 +248,7 @@ const styles = StyleSheet.create({
     padding: 12,
     margin: 4,
     borderRadius: 5,
-    width: '48%',
+    width: '46%',
     alignItems: 'center',
   },
   buttonText: {
@@ -237,7 +264,7 @@ const styles = StyleSheet.create({
   },
   verifyContainer: {
     justifyContent: 'center',
-    width: '96%',
+    width: '84%',
     alignItems: 'center',
   },
   isVerifiedText: {
@@ -248,9 +275,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
-    width: '94%',
+    width: '100%',
     alignItems: 'center',
     marginTop: 8,
+  },
+  messageContainer: {
+    position: 'absolute',
+    top: '8%',
+    left: '10%',
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
   },
 });
 

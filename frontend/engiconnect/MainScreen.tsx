@@ -52,12 +52,11 @@ function MainScreen({ navigation }: { navigation: any }) {
         return (
           <View style={styles.content}>
             <IssuesComponent SDGFilter={SDGFilter} isLoading={isLoading} setSDGFilter={setSDGFilter} setIsLoading={setIsLoading} />
-            <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} />
           </View>
         );
       case 'Settings':
         return (
-          <SettingsComponent navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} />
+          <SettingsComponent navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} setFullName={setFullName}/>
         );
       default:
         return (
@@ -143,7 +142,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
   },
   iconText: {
-    fontSize: 32,
+    fontSize: 40,
     padding: '4%',
   },
   overlay: {

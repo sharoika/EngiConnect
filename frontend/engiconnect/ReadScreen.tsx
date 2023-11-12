@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 
 function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+  
   const { issueId, setIsLoading } = route.params;
   const [issue, setIssue] = useState<any | null>(null);
   const [loaded, setLoaded] = useState(false);

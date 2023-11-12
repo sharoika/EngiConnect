@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 function PostReplyComponent({ type, navigation, isLoading }: { type: string, navigation: any, isLoading: any }) {
-  const backgroundColor = 'green';
+  const backgroundColor = 'lightgreen';
   const text = 'Post';
 
   const handleNavigateToWriteScreen = () => {
@@ -25,17 +25,18 @@ function PostReplyComponent({ type, navigation, isLoading }: { type: string, nav
 const styles = StyleSheet.create({
   postReply: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 2,
     borderRadius: 5,
-    padding: 6,
-    paddingLeft: 30,
-    paddingRight: 30,
-    margin: 10,
-    right: 6,
+    padding: 4,
+    paddingLeft: 40,
+    paddingRight: 40,
+    marginRight: 4,
+    marginBottom: 10,
+    right: 0,
   },
   postReplyText: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 28,
   },
 });
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import PostReplyComponent from './PostComponent';
 
 interface Issue {
   _id: string;
@@ -96,14 +97,14 @@ const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: {
         </ScrollView>
         </View>
       )}
+      <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    margin: 0,
-    flexGrow: 1,
+    width: '100%',
     backgroundColor: 'white',
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -156,15 +157,18 @@ const styles = StyleSheet.create({
     padding: 6,
     paddingLeft: 30,
     paddingRight: 30,
-    backgroundColor: "blue",
+    backgroundColor: "lightblue",
   },
   removeFilterText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 24,
   },
   noIssuesText: {
     textAlign: 'center',
     marginTop: 20,
+    padding: 12,
+    paddingLeft: 24,
+    paddingRight: 24,
     fontSize: 24,
     fontWeight: 'bold',
     color: 'gray',
