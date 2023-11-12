@@ -9,7 +9,7 @@ interface Issue {
   selectedSDGs: string[];
 }
 
-const IssuesComponent = ({ isLoading, setIsLoading}: { isLoading: any, setIsLoading: any }) => {
+const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: { SDGFilter: any, isLoading: any, setSDGFilter: any, setIsLoading: any }) => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -43,38 +43,61 @@ const IssuesComponent = ({ isLoading, setIsLoading}: { isLoading: any, setIsLoad
 
   const navigateToReadScreen = (issueId: string) => {
     console.log(issueId);
-    navigation.navigate('Read', { issueId } );
+    navigation.navigate('Read', { issueId, setIsLoading });
   };
+
+  const handleRemoveFilter = () => {
+    setSDGFilter(" ");
+  };
+
+  const filteredIssues = SDGFilter === " "
+    ? issues
+    : issues.filter(issue =>
+      issue.selectedSDGs.some(sdg => sdg.includes(SDGFilter))
+    );
 
   return (
     <View>
       {isLoading ? (
         <ActivityIndicator size="large" color="blue" style={styles.loadingIndicator} />
       ) : (
-        <ScrollView contentContainerStyle={styles.container}>
-          {issues.map((issue, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.issueBox}
-              onPress={() => navigateToReadScreen(issue._id)}
-            >
-              <Text style={styles.issueTitle}>{issue.subject}</Text>
-              <Text style={styles.issueDescription} numberOfLines={3}>
-                {cropText(issue.body)}
-              </Text>
-              <View style={styles.sdgsContainer}>
-                {issue.selectedSDGs.map((sdg, sdgIndex) => (
-                  <Text key={sdgIndex} style={styles.sdg}>
-                    {sdg}
-                  </Text>
-                ))}
-              </View>
+        <View>
+          {SDGFilter !== " " && (
+          <View style={styles.removeFilterContainer}>
+            <TouchableOpacity style={styles.removeFilterButton} onPress={handleRemoveFilter}>
+              <Text style={styles.removeFilterText}>Remove Filter</Text>
             </TouchableOpacity>
-          ))}
+          </View>
+        )}
+        <ScrollView contentContainerStyle={styles.container}>
+          {filteredIssues.length === 0 ? (
+            <Text style={styles.noIssuesText}>No issues match your search.</Text>
+          ) : (
+            filteredIssues.map((issue, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.issueBox}
+                onPress={() => navigateToReadScreen(issue._id)}
+              >
+                <Text style={styles.issueTitle}>{issue.subject}</Text>
+                <Text style={styles.issueDescription} numberOfLines={3}>
+                  {cropText(issue.body)}
+                </Text>
+                <View style={styles.sdgsContainer}>
+                  {issue.selectedSDGs.map((sdg, sdgIndex) => (
+                    <Text key={sdgIndex} style={styles.sdg}>
+                      {sdg}
+                    </Text>
+                  ))}
+                </View>
+              </TouchableOpacity>
+            ))
+          )}
         </ScrollView>
+        </View>
       )}
     </View>
-  ); 
+  );
 }
 
 const styles = StyleSheet.create({
@@ -123,6 +146,28 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  removeFilterContainer: {
+    marginTop: 12,
+    alignItems: 'center'
+  },
+  removeFilterButton: {
+    borderRadius: 5,
+    padding: 6,
+    paddingLeft: 30,
+    paddingRight: 30,
+    backgroundColor: "blue",
+  },
+  removeFilterText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  noIssuesText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'gray',
   },
 });
 

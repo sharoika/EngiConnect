@@ -45,13 +45,13 @@ function MainScreen({ navigation }: { navigation: any }) {
       case 'SDG':
         return (
           <View style={styles.content}>
-            <SDGComponent selectedOption={setSelectedOption} setIsLoading={setIsLoading} />
+            <SDGComponent selectedOption={setSelectedOption} setIsLoading={setIsLoading} setSDGFilter={setSDGFilter} />
           </View>
         );
       case 'Issues':
         return (
           <View style={styles.content}>
-            <IssuesComponent isLoading={isLoading} setIsLoading={setIsLoading} />
+            <IssuesComponent SDGFilter={SDGFilter} isLoading={isLoading} setSDGFilter={setSDGFilter} setIsLoading={setIsLoading} />
             <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} />
           </View>
         );
@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    alignItems: 'flex-end',
+    width: "100%",
+    alignItems: 'center'
   },
   navigation: {
     flexDirection: 'row',

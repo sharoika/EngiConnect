@@ -135,6 +135,7 @@ app.get('/issues', async (req, res) => {
     const query = {};
 
     const issues = await issuesCollection.find(query).toArray();
+    await client.close();
 
     res.status(200).json({ issues });
   } catch (error) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-const SDGComponent = ({ selectedOption, setIsLoading }: { selectedOption: any, setIsLoading: any }) => {
+const SDGComponent = ({ selectedOption, setIsLoading, setSDGFilter }: { selectedOption: any, setIsLoading: any, setSDGFilter: any }) => {
   const sdgs = [
     'SDG 1: No Poverty',
     'SDG 2: Zero Hunger',
@@ -22,8 +22,8 @@ const SDGComponent = ({ selectedOption, setIsLoading }: { selectedOption: any, s
     'SDG 17: Partnerships for the Goals',
   ];
 
-  const handleSDGSelect = (selectedSDG) => {
-    // Use navigation.navigate to switch to the "Issues" screen
+  const handleSDGSelect = ( {selectedSDG}: {selectedSDG: string}) => {
+    setSDGFilter(selectedSDG);
     setIsLoading(true);
     selectedOption("Issues");
   };
@@ -34,7 +34,7 @@ const SDGComponent = ({ selectedOption, setIsLoading }: { selectedOption: any, s
         <TouchableOpacity
           key={index}
           style={styles.sdgButton}
-          onPress={() => handleSDGSelect(sdg)}
+          onPress={() => handleSDGSelect({ selectedSDG: sdg })}
         >
           <Text style={styles.sdgText}>{sdg}</Text>
         </TouchableOpacity>

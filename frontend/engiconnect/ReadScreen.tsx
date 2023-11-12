@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 
 function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
-    console.log(route);
-  const { issueId } = route.params;
+  const { issueId, setIsLoading } = route.params;
   const [issue, setIssue] = useState<any | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   console.log(issueId);
 
   useEffect(() => {
+    // setIsLoading(true);
     const fetchIssue = async () => {
       try {
         const response = await fetch(`http://localhost:3001/issue/${issueId}`);
@@ -42,6 +42,7 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
   };
 
   const handleGoBack = () => {
+    setIsLoading(true);
     navigation.navigate('Main');
   };
 
