@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import PostReplyComponent from './PostComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Issue {
   _id: string;
@@ -10,14 +11,25 @@ interface Issue {
   selectedSDGs: string[];
 }
 
-const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: { SDGFilter: any, isLoading: any, setSDGFilter: any, setIsLoading: any }) => {
+const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: { SDGFilter: any, isLoading: any, setSDGFilter: any, setIsLoading: any }) => {  
   const [issues, setIssues] = useState<Issue[]>([]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
+  var fullName = "";
+  AsyncStorage.getItem('fullName').then(fn => {
+    fullName = fn ?? "";
+  })
+
+  var userId = " test ";
+  AsyncStorage.getItem('userId').then(ui => {
+    userId = ui ?? " pain ";
+  });
+
   useEffect(() => {
     const fetchIssues = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch('http://localhost:3001/issues');
         if (response.ok) {
           const data = await response.json();
@@ -43,7 +55,7 @@ const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: {
   };
 
   const navigateToReadScreen = (issueId: string) => {
-    navigation.navigate('Read', { issueId, isLoading, setIsLoading });
+    navigation.navigate('Read', { issueId, userId, fullName });
   };
 
   const handleRemoveFilter = () => {

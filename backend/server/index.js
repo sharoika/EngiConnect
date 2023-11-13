@@ -177,32 +177,27 @@ app.get('/issue/:id', async (req, res) => {
 
 app.post('/issue', async (req, res) => {
   try {
-    const { subjectText, bodyText, type, selectedSDGs, userId, fullName } = req.body;
+    const { subjectText, bodyText, selectedSDGs, userId, fullName } = req.body;
 
     await client.connect();
     const issuesCollection = client.db('engiconnect').collection('issues');
 
     const createdDate = Date.now();
-    const likes = 0;
-    const dislikes = 0
 
     const newIssue = {
       subject: subjectText,
       body: bodyText,
-      type,
       selectedSDGs,
       userId,
       fullName,
       createdDate,
-      likes,
-      dislikes
     };
 
     const result = await issuesCollection.insertOne(newIssue);
     //await client.close();
 
     if (result.insertedId) {
-      res.status(200).json({ message: `${type} created successfully`, _id: result.insertedId });
+      res.status(200).json({ message: `Created successfully`, _id: result.insertedId });
     } else {
       res.status(500).json({ message: 'Failed to create issue' });
     }
@@ -296,6 +291,70 @@ app.get('/replies/:issueId', async (req, res) => {
   }
 });
 
+app.post('/interaction', async (req, res) => {
+  try {
+    var { userId, issueId, hasRead, hasLiked, hasDisliked } = req.body;
+    console.log(userId, issueId, hasRead, hasLiked, hasDisliked)
+    hasRead = true;
+
+    await client.connect();
+
+    const interactionsCollection = client.db('engiconnect').collection('interactions');
+    const existingInteraction = await interactionsCollection.findOne({ userId, issueId });
+
+    if (hasLiked == null) {
+      hasLiked = existingInteraction.hasLiked ?? false;
+    }
+
+    if (hasDisliked == null) {
+      hasDisliked = existingInteraction.hasDisliked ?? false;
+    }
+
+    if (existingInteraction) {
+      await interactionsCollection.updateOne(
+        { userId, issueId },
+        { $set: { hasRead, hasLiked, hasDisliked } }
+      );
+
+      const updatedInteraction = await interactionsCollection.findOne({ userId, issueId });
+      res.status(200).json({ message: 'Interaction record updated successfully', interaction: updatedInteraction });
+    } else {
+      await interactionsCollection.insertOne({
+        userId,
+        issueId,
+        hasRead,
+        hasLiked,
+        hasDisliked,
+      });
+
+      // Fetch the inserted record
+      const insertedInteraction = await interactionsCollection.findOne({ userId, issueId });
+      res.status(200).json({ message: 'Interaction record inserted successfully', interaction: insertedInteraction });
+    }
+  } catch (error) {
+    console.error('Error updating/inserting interaction record:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  }
+});
+
+app.get('/interaction/count/:issueId', async (req, res) => {
+  try {
+    const issueId = req.params.issueId;
+    await client.connect();
+    const interactionsCollection = client.db('engiconnect').collection('interactions');
+
+    const likeCount = await interactionsCollection.countDocuments({ issueId, hasLiked: true });
+    const dislikeCount = await interactionsCollection.countDocuments({ issueId, hasDisliked: true });
+
+    // Close the connection after fetching the counts
+    // await client.close();
+
+    res.status(200).json({ likeCount, dislikeCount });
+  } catch (error) {
+    console.error('Error getting interaction counts:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
