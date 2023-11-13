@@ -92,7 +92,7 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
       .then((response) => response.json())
       .then((data) => {
         const issueId = data._id;
-        navigation.navigate('Read', { issueId, setIsLoading });
+        navigation.navigate('Read', { issueId, userId, fullName });
       })
       .catch((error) => {
         console.error(error);
