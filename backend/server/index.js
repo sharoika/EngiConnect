@@ -98,23 +98,37 @@ app.put('/user/:id', async (req, res) => {
   try {
     const userId = req.params.id;
     const updatedUserData = req.body;
+    console.log(updatedUserData);
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+
+    console.log("here");
 
     if (!user) {
       res.status(404).json({ message: 'User not found' });
     } else {
       const { _id, ...userDataWithoutId } = updatedUserData;
 
+      console.log("here1");
+
       const isDataUpdated = Object.keys(userDataWithoutId).every(
-        key => user[key] === userDataWithoutId[key]
+        key => {
+          return key === 'isVerified' || user[key] === userDataWithoutId[key];
+        }
       );
 
-      if (isDataUpdated) {
+      if (!isDataUpdated) {
+        userDataWithoutId.isVerified = false; 
+      }
+      
+      const isVerifiedUpdated = user.isVerified == userDataWithoutId.isVerified;      
+
+      if (isDataUpdated && isVerifiedUpdated) {
+        console.log("here2");
         res.status(200).json({ message: 'User data is already up to date' });
       } else {
-        userDataWithoutId.isVerified = false;
+        console.log("here3");
         const result = await usersCollection.updateOne(
           { _id: new ObjectId(userId) },
           { $set: userDataWithoutId }
@@ -123,8 +137,10 @@ app.put('/user/:id', async (req, res) => {
         //await client.close();
 
         if (result.modifiedCount === 1) {
+          console.log("here4");
           res.status(200).json({ message: 'User data updated successfully' });
         } else {
+          console.log("here5");
           res.status(500).json({ message: 'Failed to update user data' });
         }
       }
@@ -294,7 +310,6 @@ app.get('/replies/:issueId', async (req, res) => {
 app.post('/interaction', async (req, res) => {
   try {
     var { userId, issueId, hasRead, hasLiked, hasDisliked } = req.body;
-    console.log(userId, issueId, hasRead, hasLiked, hasDisliked)
     hasRead = true;
 
     await client.connect();
