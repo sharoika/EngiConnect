@@ -1,5 +1,13 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, TextInput, FlatList, StyleSheet, ScrollView } from "react-native";
+
+interface Reply {
+  issueId: string;
+  userId: string;
+  fullName: string;
+  replyText: string;
+}
 
 function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
   React.useLayoutEffect(() => {
@@ -7,44 +15,90 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
       headerShown: false,
     });
   }, [navigation]);
-  
+
+  var userId = "";
+  AsyncStorage.getItem('userId').then(ui => {
+    userId = ui ?? "";
+  });
+
+  var fullName = "";
+  AsyncStorage.getItem('fullName').then(fn => {
+    fullName = fn ?? "";
+  })
+
   const { issueId, setIsLoading } = route.params;
   const [issue, setIssue] = useState<any | null>(null);
   const [loaded, setLoaded] = useState(false);
-
-  console.log(issueId);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [hasDisliked, setHasDisliked] = useState(false);
+  const [newReply, setNewReply] = useState("");
+  const [replies, setReplies] = useState<Reply[]>([]);
 
   useEffect(() => {
-    // setIsLoading(true);
-    const fetchIssue = async () => {
+    const fetchIssueAndReplies = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/issue/${issueId}`);
-        const data = await response.json();
+        const [issueResponse, repliesResponse] = await Promise.all([
+          fetch(`http://localhost:3001/issue/${issueId}`),
+          fetch(`http://localhost:3001/replies/${issueId}`),
+        ]);
 
-        if (response.ok) {
-          setIssue(data.issue);
+        const [issueData, repliesData] = await Promise.all([
+          issueResponse.json(),
+          repliesResponse.json(),
+        ]);
+
+        if (issueResponse.ok && repliesResponse.ok) {
+          setIssue(issueData.issue);
+          setHasLiked(issueData.issue.hasLiked);
+          setHasDisliked(issueData.issue.hasDisliked);
+          setReplies(repliesData.replies);
         } else {
-          console.error('Error fetching issue:', data.message);
+          console.error('Error fetching issue or replies:', issueData.message || repliesData.message);
         }
 
         setLoaded(true);
       } catch (error) {
-        console.error('Error fetching issue:', error);
+        console.error('Error fetching issue or replies:', error);
         setLoaded(true);
       }
     };
 
-    fetchIssue();
+    fetchIssueAndReplies();
   }, [issueId]);
 
-  const handleReply = () => {
-    // Implement the logic for handling the reply button press
-    // For example, navigate to the WriteScreen with the necessary parameters
-    navigation.navigate('WriteScreen', {
-      type: 'Reply',
-      subject: issue?.subject,
-      body: issue?.body,
-    });
+  const handleReply = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/reply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          issueId: issue._id,
+          userId: userId,
+          fullName: fullName,
+          replyText: newReply,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const newReplyObject: Reply = {
+          issueId: issue._id,
+          userId: userId,
+          fullName: fullName,
+          replyText: newReply,
+        };
+
+        setReplies((prevReplies) => [...prevReplies, newReplyObject]);
+        setNewReply("");
+      } else {
+        console.error('Error adding reply:', data.message);
+      }
+    } catch (error) {
+      console.error('Error adding reply:', error);
+    }
   };
 
   const handleGoBack = () => {
@@ -52,9 +106,17 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
     navigation.navigate('Main');
   };
 
+  const handleLike = async () => {
+    // Implement logic to handle liking issue
+  };
+
+  const handleDislike = async () => {
+    // Implement logic to handle disliking issue
+  };
+
   if (!loaded) {
     return (
-      <View>
+      <View style={styles.container}>
         <Text>Loading...</Text>
       </View>
     );
@@ -62,7 +124,7 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
 
   if (!issue) {
     return (
-      <View>
+      <View style={styles.container}>
         <Text>Error loading issue</Text>
       </View>
     );
@@ -70,50 +132,142 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{issue.subject}</Text>
-      <Text style={styles.body}>{issue.body}</Text>
+      <View style={styles.headerContainer}>
+        <ScrollView style={styles.scrollContainerTitle}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', textAlignVertical: 'center', paddingBottom: "6%" }}>
+            {issue.subject}
+          </Text>
+        </ScrollView>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', textAlignVertical: 'center', paddingTop: "2%" }}>
+          {"By: " + issue.fullName}
+        </Text>
+        <ScrollView style={styles.scrollContainerBody}>
+          <Text style={{ fontSize: 16, textAlign: 'center', textAlignVertical: 'center', paddingBottom: "8%" }}>
+            {issue.body}
+          </Text>
+        </ScrollView>
+      </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.replyButton} onPress={handleReply}>
-          <Text style={styles.buttonText}>Reply</Text>
+      {Array.isArray(replies) ? (
+        <ScrollView style={styles.scrollContainerReplies}>
+          <View style={{paddingBottom: 4}}>
+          <FlatList
+            data={replies}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.replyContainer}>
+                <Text>{item.replyText}</Text>
+                <Text numberOfLines={1}>{"By: " + item.fullName}</Text>
+              </View>
+            )}
+          />
+          </View>
+        </ScrollView>
+      ) : (
+        <View>
+          <Text>No replies available</Text>
+        </View>
+      )}
+
+      <View style={styles.additionalInfoContainer}>
+        <View style={[styles.countContainer, { backgroundColor: 'lightblue' }]}>
+          <Text style={styles.countText}>Likes: {issue.likes}</Text>
+        </View>
+        <View style={[styles.countContainer, { backgroundColor: '#FED8B1' }]}>
+          <Text style={styles.countText}>Dislikes: {issue.dislikes}</Text>
+        </View>
+      </View>
+
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Add a reply..."
+          value={newReply}
+          onChangeText={(text) => setNewReply(text)}
+        />
+        <TouchableOpacity style={styles.addReplyButton} onPress={handleReply}>
+          <Text style={styles.buttonText}>Add Reply</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.closeButton} onPress={handleGoBack}>
-        <Text style={styles.buttonText}>Back</Text>
-      </TouchableOpacity>
+      <View style={styles.bottomButtonContainer}>
+        <TouchableOpacity style={[styles.bottomButton, { backgroundColor: !hasLiked ? 'blue' : 'lightblue' }]} onPress={handleLike}>
+          <Text style={styles.buttonText}>{hasLiked ? 'Liked' : 'Like'}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.bottomButton, { backgroundColor: !hasDisliked ? 'orange' : "#FED8B1" }]} onPress={handleDislike}>
+          <Text style={styles.buttonText}>{hasDisliked ? 'Disliked' : 'Dislike'}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.bottomButton, { backgroundColor: 'red' }]} onPress={handleGoBack}>
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "aliceblue",
-    paddingTop: 20,
-    paddingBottom: 0,
+    width: "100%",
+    paddingTop: "20%",
+    paddingLeft: "6%",
+    paddingRight: "6%",
+    paddingBottom: "8%",
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  body: {
-    fontSize: 18,
-    marginBottom: 16,
+  headerContainer: {
+    alignItems: "center",
+    width: '100%'
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "space-around",
     width: "80%",
     marginBottom: 16,
   },
-  replyButton: {
-    backgroundColor: 'green',
+  likeButton: {
+    backgroundColor: 'blue',
     padding: 12,
     margin: 4,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  dislikeButton: {
+    backgroundColor: 'orange',
+    padding: 12,
+    margin: 4,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  replyContainer: {
+    padding: 2,
+    margin: 4,
+    width: "98%",
+    borderRadius: 5,
+    backgroundColor: '#EEEEEE',
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 12,
+    marginRight: 8,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: 'lightgrey',
+  },
+  addReplyButton: {
+    backgroundColor: 'green',
+    padding: 12,
     borderRadius: 5,
     alignItems: 'center',
   },
@@ -128,6 +282,68 @@ const styles = {
     color: 'white',
     fontWeight: 'bold',
   },
-};
+  scrollContainerTitle: {
+    width: '95%',
+    maxHeight: 40,
+    padding: '2%',
+    margin: '1%',
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: 'lightgrey',
+    borderRadius: 10,
+  },
+  scrollContainerBody: {
+    width: '95%',
+    maxHeight: 250,
+    margin: "2%",
+    padding: "4%",
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: 'lightgrey',
+    borderRadius: 10,
+  },
+  scrollContainerReplies: {
+    width: '95%',
+    maxHeight: 250,
+    margin: "2%",
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: 'lightgrey',
+    borderRadius: 10,
+  },
+  bottomButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    bottom: 0,
+  },
+  bottomButton: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    padding: 12,
+    margin: 4,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  additionalInfoContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    borderRadius: 8,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  countContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    padding: 8,
+    margin: 4,
+  },
+  countText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+});
 
 export default ReadScreen;

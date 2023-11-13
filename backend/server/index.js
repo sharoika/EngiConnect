@@ -17,6 +17,7 @@ app.post("/login", async (req, res) => {
     await client.connect();
     const usersCollection = client.db("engiconnect").collection("users");
     const user = await usersCollection.findOne({ email, password });
+    //await client.close();
     if (user) {
       console.log("Login successful.");
       res.status(200).json({ message: "Login successful.", userId: user._id, fullName: (user.firstName + " " + user.lastName) });
@@ -28,8 +29,6 @@ app.post("/login", async (req, res) => {
     console.error("Error during login:", error);
     console.log("Internal server error, please try again.");
     res.status(500).json({ message: "Internal server error, please try again." });
-  } finally {
-    await client.close();
   }
 });
 
@@ -63,6 +62,7 @@ app.post('/signup', async (req, res) => {
       password,
     };
     const result = await usersCollection.insertOne(newUser);
+    //await client.close();
     if (result.insertedId) {
       console.log("User registered successfully.");
       res.status(200).json({ message: 'User registered successfully.' });
@@ -73,8 +73,6 @@ app.post('/signup', async (req, res) => {
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
   }
 });
 
@@ -84,6 +82,7 @@ app.get('/user/:id', async (req, res) => {
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    //await client.close();
     if (user) {
       res.status(200).json(user);
     } else {
@@ -92,8 +91,6 @@ app.get('/user/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
   }
 });
 
@@ -123,6 +120,8 @@ app.put('/user/:id', async (req, res) => {
           { $set: userDataWithoutId }
         );
 
+        //await client.close();
+
         if (result.modifiedCount === 1) {
           res.status(200).json({ message: 'User data updated successfully' });
         } else {
@@ -133,8 +132,6 @@ app.put('/user/:id', async (req, res) => {
   } catch (error) {
     console.error('Error updating user data:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
   }
 });
 
@@ -145,15 +142,13 @@ app.get('/issues', async (req, res) => {
 
     const query = {};
 
-    const issues = await issuesCollection.find(query).toArray();
-    await client.close();
+    const issues = await issuesCollection.find(query).sort({ createdDate: -1 }).toArray();
+    //await client.close();
 
     res.status(200).json({ issues });
   } catch (error) {
     console.error('Error getting issues:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
   }
 });
 
@@ -167,6 +162,7 @@ app.get('/issue/:id', async (req, res) => {
     const query = { _id: ObjectId(issueId) };
 
     const issue = await issuesCollection.findOne(query);
+    //await client.close();
 
     if (issue) {
       res.status(200).json({ issue });
@@ -176,26 +172,34 @@ app.get('/issue/:id', async (req, res) => {
   } catch (error) {
     console.error('Error getting issue by ID:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
   }
 });
 
 app.post('/issue', async (req, res) => {
   try {
-    const { subjectText, bodyText, type, selectedSDGs } = req.body;
+    const { subjectText, bodyText, type, selectedSDGs, userId, fullName } = req.body;
 
     await client.connect();
     const issuesCollection = client.db('engiconnect').collection('issues');
+
+    const createdDate = Date.now();
+    const likes = 0;
+    const dislikes = 0
 
     const newIssue = {
       subject: subjectText,
       body: bodyText,
       type,
       selectedSDGs,
+      userId,
+      fullName,
+      createdDate,
+      likes,
+      dislikes
     };
 
     const result = await issuesCollection.insertOne(newIssue);
+    //await client.close();
 
     if (result.insertedId) {
       res.status(200).json({ message: `${type} created successfully`, _id: result.insertedId });
@@ -205,8 +209,6 @@ app.post('/issue', async (req, res) => {
   } catch (error) {
     console.error('Error creating issue:', error);
     res.status(500).json({ message: 'Internal server error, please try again' });
-  } finally {
-    await client.close();
   }
 });
 
@@ -245,9 +247,55 @@ app.post('/issue', async (req, res) => {
 //     console.error('Error updating issue:', error);
 //     res.status(500).json({ message: 'Internal server error, please try again' });
 //   } finally {
-//     await client.close();
+//     //await client.close();
 //   }
 // });
+
+app.post('/reply', async (req, res) => {
+  try {
+    const { issueId, userId, fullName, replyText } = req.body;
+
+    await client.connect();
+
+    const repliesCollection = client.db('engiconnect').collection('replies');
+
+    const newReply = {
+      issueId,
+      userId,
+      fullName,
+      replyText,
+    };
+
+    const result = await repliesCollection.insertOne(newReply);
+    //await client.close();
+
+    if (result.insertedId) {
+      res.status(200).json({ message: 'Reply added successfully', _id: result.insertedId });
+    } else {
+      res.status(500).json({ message: 'Failed to add reply' });
+    }
+  } catch (error) {
+    console.error('Error adding reply:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  }
+});
+
+app.get('/replies/:issueId', async (req, res) => {
+  try {
+    const { issueId } = req.params;
+
+    await client.connect();
+
+    const repliesCollection = client.db('engiconnect').collection('replies');
+    const replies = await repliesCollection.find({ issueId: issueId }).toArray();
+
+    res.status(200).json({ replies });
+  } catch (error) {
+    console.error('Error fetching replies:', error);
+    res.status(500).json({ message: 'Internal server error, please try again' });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import { Text, View, TextInput, TouchableOpacity, Modal, FlatList } from "react-native";
 
@@ -8,12 +9,22 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
     });
   }, [navigation]);
 
-  const { type, subject, body } = route.params;
+  const { setIsLoading } = route.params;
 
-  const [subjectText, setSubjectText] = useState(subject);
-  const [bodyText, setBodyText] = useState(body);
+  const [subjectText, setSubjectText] = useState("");
+  const [bodyText, setBodyText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSDGs, setSelectedSDGs] = useState<string[]>([]);
+
+  var userId = "";
+  AsyncStorage.getItem('userId').then(ui => {
+    userId = ui ?? "";
+  });
+  
+  var fullName = "";
+  AsyncStorage.getItem('fullName').then(fn => {
+    fullName = fn ?? "";
+  })
 
   const sdgs = [
     'SDG 1: No Poverty',
@@ -43,11 +54,14 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
     const updatedSDGs = [...selectedSDGs];
 
     if (updatedSDGs.includes(item)) {
-      // Deselect the SDG if it's already selected
       updatedSDGs.splice(updatedSDGs.indexOf(item), 1);
     } else {
-      // Select the SDG if it's not selected
-      updatedSDGs.push(item);
+      if (updatedSDGs.length < 2) {
+        updatedSDGs.push(item);
+      } else {
+        updatedSDGs.shift();
+        updatedSDGs.push(item);
+      }
     }
 
     setSelectedSDGs(updatedSDGs);
@@ -63,8 +77,9 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
     const postData = {
       subjectText,
       bodyText,
-      type,
       selectedSDGs,
+      userId,
+      fullName,
     };
 
     fetch(apiUrl, {
@@ -76,10 +91,8 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const issueId = data._id;
-        console.log(issueId );
-        navigation.navigate('Read', { issueId } );
+        navigation.navigate('Read', { issueId, setIsLoading });
       })
       .catch((error) => {
         console.error(error);
@@ -87,19 +100,18 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{type}</Text>
-      <Text style={styles.label}>Subject:</Text>
+    <View style={styles.container as any}>
+      <Text style={styles.label as any}>Subject:</Text>
       <TextInput
-        style={styles.subjectInput}
+        style={styles.subjectInput as any}
         value={subjectText}
         onChangeText={(text) => setSubjectText(text)}
         placeholder="Enter subject"
       />
 
-      <Text style={styles.label}>Body:</Text>
+      <Text style={styles.label as any}>Body:</Text>
       <TextInput
-        style={styles.bodyInput}
+        style={styles.bodyInput as any}
         value={bodyText}
         onChangeText={(text) => setBodyText(text)}
         placeholder="Enter body"
@@ -107,8 +119,8 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
         numberOfLines={4}
       />
 
-      <Text style={styles.label}>Select SDGs:</Text>
-      <TouchableOpacity style={styles.dropdownButton} onPress={toggleModal}>
+      <Text style={styles.label as any}>Select SDGs:</Text>
+      <TouchableOpacity style={styles.dropdownButton as any} onPress={toggleModal}>
         {selectedSDGs.length > 0 ? (
           selectedSDGs.map((sdg, index) => (
             <Text key={index}>{sdg}</Text>
@@ -119,14 +131,14 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
       </TouchableOpacity>
 
       <Modal visible={isModalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
+        <View style={styles.modalContainer as any}>
           <FlatList
             data={sdgs}
             keyExtractor={(item) => item}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[
-                  styles.modalItem,
+                  styles.modalItem as any,
                   selectedSDGs.includes(item) && { backgroundColor: 'lightblue' },
                 ]}
                 onPress={() => handleSelectSDG(item)}
@@ -135,18 +147,18 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
               </TouchableOpacity>
             )}
           />
-          <TouchableOpacity style={styles.modalCloseButton} onPress={toggleModal}>
-            <Text style={styles.buttonText}>Close</Text>
+          <TouchableOpacity style={styles.modalCloseButton as any} onPress={toggleModal}>
+            <Text style={styles.buttonText as any}>Close</Text>
           </TouchableOpacity>
         </View>
       </Modal>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.closeButton} onPress={handleGoBack}>
-          <Text style={styles.buttonText}>Back</Text>
+      <View style={styles.buttonContainer as any}>
+        <TouchableOpacity style={styles.closeButton as any} onPress={handleGoBack}>
+          <Text style={styles.buttonText as any}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitButton} onPress={handlePostReply}>
-          <Text style={styles.buttonText}>{type === "Post" ? "Post" : "Reply"}</Text>
+        <TouchableOpacity style={styles.submitButton as any} onPress={handlePostReply}>
+          <Text style={styles.buttonText as any}>{"Post"}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -159,7 +171,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "aliceblue",
-    paddingTop: 20, 
+    paddingTop: 20,
     paddingBottom: 0,
   },
   title: {
@@ -194,7 +206,7 @@ const styles = {
   },
   dropdownButton: {
     width: "80%",
-    minHeight: 40,  // Set a minimum height to prevent it from collapsing when there are no selected SDGs
+    minHeight: 40,
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,

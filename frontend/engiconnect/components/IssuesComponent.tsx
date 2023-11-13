@@ -43,8 +43,7 @@ const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: {
   };
 
   const navigateToReadScreen = (issueId: string) => {
-    console.log(issueId);
-    navigation.navigate('Read', { issueId, setIsLoading });
+    navigation.navigate('Read', { issueId, isLoading, setIsLoading });
   };
 
   const handleRemoveFilter = () => {
@@ -97,7 +96,7 @@ const IssuesComponent = ({ SDGFilter, isLoading, setSDGFilter, setIsLoading }: {
         </ScrollView>
         </View>
       )}
-      <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} />
+      <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading}/>
     </View>
   );
 }

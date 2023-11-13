@@ -1,15 +1,19 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LogBox } from 'react-native';
 
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
 import MainScreen from './MainScreen';
 import ReadScreen from './ReadScreen';
 import WriteScreen from './WriteScreen';
-import ProfileScreen from './ProfileScreen';
 
 const Stack = createNativeStackNavigator();
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 function Navigation() {
   return (
@@ -20,7 +24,6 @@ function Navigation() {
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="Read" component={ReadScreen} />
         <Stack.Screen name="Write" component={WriteScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
