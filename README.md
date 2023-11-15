@@ -15,7 +15,7 @@ An application to connect Engineers, Academics, and Professionals with problems 
 ### Project Scrum 2 Video:
 [Scrum 2 Demo Video](https://www.youtube.com/watch?v=ogA7YbgL2mQ&ab_channel=MaksimSharoika)
 
-[Scrum 2 Document](https://github.com/sharoika/EngiConnect/blob/008cd48455b29cf8bf8310797a31f6fe3c497899/Scrums/Scrum%202/Project%20Status%20Report.pdf)
+[Scrum 2 Document](https://github.com/sharoika/EngiConnect/blob/b3d44b837e13211f0c50adb23316e61579659b0a/Scrums/Scrum%202/Project%20Status%20Report.pdf)
 <!---#### Project Final Submission Video: --->
 
 #### Project Kanban Board (GitHub)
