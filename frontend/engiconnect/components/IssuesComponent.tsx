@@ -10,6 +10,7 @@ import {
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import PostReplyComponent from './PostComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChatComponent from './ChatComponent';
 
 interface Issue {
   _id: string;
@@ -35,50 +36,54 @@ const IssuesComponent = ({
 }) => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [favoritedIssues, setFavoritedIssues] = useState<string[]>([]);
+  const [userId, setUserId] = useState<string>();
+  const [fullName, setFullName] = useState<string>();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  var fullName = '';
-  AsyncStorage.getItem('fullName').then((fn) => {
-    fullName = fn ?? '';
-  });
-
-  var userId = ' test ';
-  AsyncStorage.getItem('userId').then((ui) => {
-    userId = ui ?? ' pain ';
-  });
-
-useEffect(() => {
-  const fetchIssues = async () => {
+  async function loadData() {
     try {
-      setIsLoading(true);
+      setFullName(await AsyncStorage.getItem('fullName') ?? '');
+      setUserId(await AsyncStorage.getItem('userId') ?? '');
 
-      // Fetch all issues
-      const response = await fetch('http://localhost:3001/issues');
-      if (response.ok) {
-        const data = await response.json();
-
-        // Check if the current user has favorited each issue
-        console.log(data);
-        const initialFavoritedIssues = data.issues
-        .filter((issue: { favouritedUsers: string | string[]; }) => issue.favouritedUsers.includes(userId))
-        .map((issue: { _id: any; }) => issue._id);
-
-        setFavoritedIssues(initialFavoritedIssues);
-        setIssues(data.issues);
-      } else {
-        console.error('Error fetching issues:', response.status);
-      }
+      console.log('Full Name:', fullName);
+      console.log('User ID:', userId);
     } catch (error) {
-      console.error('Error fetching issues:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Error loading data:', error);
     }
-  };
+  }
+  loadData();
 
-  fetchIssues();
-}, [isFocused]);
-  
+  useEffect(() => {
+    const fetchIssues = async () => {
+      try {
+        setIsLoading(true);
+
+        // Fetch all issues
+        const response = await fetch('http://localhost:3001/issues');
+        if (response.ok) {
+          const data = await response.json();
+
+          // Check if the current user has favorited each issue
+          const initialFavoritedIssues = data.issues
+            .filter((issue: { favouritedUsers: string | string[]; }) => issue.favouritedUsers.includes(userId))
+            .map((issue: { _id: any; }) => issue._id);
+
+          setFavoritedIssues(initialFavoritedIssues);
+          setIssues(data.issues);
+        } else {
+          console.error('Error fetching issues:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching issues:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchIssues();
+  }, [isFocused]);
+
 
   const cropText = (text: string) => {
     if (text.length > 100) {
@@ -146,7 +151,6 @@ useEffect(() => {
         issue.selectedSDGs.some((sdg) => sdg.includes(SDGFilter))
       );
 
-  console.log(favoritedIssues);
 
   return (
     <View>
@@ -194,6 +198,7 @@ useEffect(() => {
         </View>
       )}
       <PostReplyComponent type="Post" navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} />
+      <ChatComponent navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} userId={userId} fullName={fullName} />
     </View>
   );
 };

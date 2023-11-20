@@ -88,6 +88,8 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
 
   const handleReply = async () => {
     try {
+      toggleFavorite(issue._id);
+
       const response = await fetch('http://localhost:3001/reply', {
         method: 'POST',
         headers: {
@@ -118,6 +120,22 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
       }
     } catch (error) {
       console.error('Error adding reply:', error);
+    }
+  };
+
+  const toggleFavorite = async (issueId: string) => {
+    try {
+      if (!issue.favouritedUsers.includes(userId)) {
+        const response = await fetch(`http://localhost:3001/issue/${issueId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }),
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling favorite status:', error);
     }
   };
 

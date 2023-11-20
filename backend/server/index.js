@@ -11,6 +11,35 @@ const client = new MongoClient(process.env.DB_URI);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+
+const io = new Server({
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
+
+io.listen(3002);
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // Listen for incoming messages
+  socket.on('message', (message) => {
+    console.log('Received message:', message);
+
+    // Broadcast the message to all connected clients
+    io.emit('message', message);
+  });
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;

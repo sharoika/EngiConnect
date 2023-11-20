@@ -8,6 +8,7 @@ import SignUpScreen from './SignUpScreen';
 import MainScreen from './MainScreen';
 import ReadScreen from './ReadScreen';
 import WriteScreen from './WriteScreen';
+import ChatScreen from './ChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ function Navigation() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Read" component={ReadScreen} />
         <Stack.Screen name="Write" component={WriteScreen} />
       </Stack.Navigator>
