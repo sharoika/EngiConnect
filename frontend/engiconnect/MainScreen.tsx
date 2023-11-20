@@ -25,6 +25,7 @@ function MainScreen({ navigation }: { navigation: any }) {
       if (!storedUserId || !storedFullName) {
         navigation.navigate('Login');
       } else {
+        console.log("setting stores: " + storedUserId + storedFullName)
         setUserId(storedUserId);
         setFullName(storedFullName);
       }
@@ -48,7 +49,7 @@ function MainScreen({ navigation }: { navigation: any }) {
       case 'Issues':
         return (
           <View style={styles.content}>
-            <IssuesComponent SDGFilter={SDGFilter} isLoading={isLoading} setSDGFilter={setSDGFilter} setIsLoading={setIsLoading} />
+            <IssuesComponent SDGFilter={SDGFilter} isLoading={isLoading} setSDGFilter={setSDGFilter} setIsLoading={setIsLoading} userId={userId} fullName={fullName} />
           </View>
         );
       case 'Settings':

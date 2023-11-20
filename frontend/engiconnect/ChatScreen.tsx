@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: 'lightgrey',
     paddingVertical: 8,
@@ -115,11 +114,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   backButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
     backgroundColor: 'red',
-    borderRadius: 20,
+    marginTop: 6,
+    marginBottom: 12,
+    borderRadius: 30,
     paddingVertical: 8,
     paddingHorizontal: 16,
     alignItems: 'center',

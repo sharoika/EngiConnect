@@ -28,32 +28,25 @@ const IssuesComponent = ({
   isLoading,
   setSDGFilter,
   setIsLoading,
+  userId,
+  fullName,
 }: {
   SDGFilter: any;
   isLoading: any;
   setSDGFilter: any;
   setIsLoading: any;
+  userId: any;
+  fullName: any;
 }) => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [favoritedIssues, setFavoritedIssues] = useState<string[]>([]);
-  const [userId, setUserId] = useState<string>();
-  const [fullName, setFullName] = useState<string>();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
-  async function loadData() {
-    try {
-      setFullName(await AsyncStorage.getItem('fullName') ?? '');
-      setUserId(await AsyncStorage.getItem('userId') ?? '');
-    } catch (error) {
-      console.error('Error loading data:', error);
-    }
-  }
-  loadData();
 
   useEffect(() => {
     const fetchIssues = async () => {
       try {
+        console.log("hithere");
         setIsLoading(true);
         const response = await fetch('http://localhost:3001/issues');
         if (response.ok) {
@@ -115,6 +108,7 @@ const IssuesComponent = ({
   const sortedIssues = issues.sort((a, b) => {
     const aFavorited = favoritedIssues.includes(a._id);
     const bFavorited = favoritedIssues.includes(b._id);
+
     if (aFavorited && !bFavorited) {
       return -1;
     } else if (!aFavorited && bFavorited) {
