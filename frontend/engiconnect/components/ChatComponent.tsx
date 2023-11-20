@@ -8,15 +8,14 @@ function ChatButtonComponent({
   userId,
   fullName,
 }: {
-  navigation: any;
-  isLoading: any;
+  navigation: any; isLoading: any;
   setIsLoading: any;
   userId: any;
   fullName: any;
 }) {
   const backgroundColor = "lightpink";
   const text = "Chat";
-
+  
   const handleNavigateToChatScreen = () => {
     if (!isLoading) {
       console.log("PreChat Screen userId:" + userId);

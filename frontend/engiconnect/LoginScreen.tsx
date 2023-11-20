@@ -13,7 +13,7 @@ function LoginScreen({ navigation }: { navigation: any }) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(" ");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   useFocusEffect(
@@ -29,9 +29,8 @@ function LoginScreen({ navigation }: { navigation: any }) {
     }, [])
   );
 
-
   const handleLogin = async () => {
-    setMessage(" ");
+    setMessage("");
     setLoading(true);
     try {
       const response = await axios.post("http://localhost:3001/login", { email, password });
@@ -48,7 +47,7 @@ function LoginScreen({ navigation }: { navigation: any }) {
       setLoading(false);
     }
   };
-
+  
   return (
     <View style={styles.container as any}>
       <Text style={styles.title as any}>EngiConnect Login</Text>
@@ -76,7 +75,7 @@ function LoginScreen({ navigation }: { navigation: any }) {
           <Text style={styles.buttonText as any}>Login</Text>
         </TouchableOpacity>
       )}
-      <TouchableOpacity style={styles.signupButton as any} onPress={() => { navigation.navigate('SignUp'); setMessage(" "); }}>
+      <TouchableOpacity style={styles.signupButton as any} onPress={() => { navigation.navigate('SignUp'); setMessage(""); }}>
         <Text style={styles.buttonText as any}>Sign Up</Text>
       </TouchableOpacity>
     </View>

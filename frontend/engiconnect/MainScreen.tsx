@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SettingsComponent from './components/SettingsComponent';
-import PostReplyComponent from './components/PostComponent';
 import IssuesComponent from './components/IssuesComponent';
 import SDGComponent from './components/SDGComponent';
 
@@ -14,10 +13,8 @@ function MainScreen({ navigation }: { navigation: any }) {
   }, [navigation]);
 
   const [selectedOption, setSelectedOption] = useState('SDG');
-
   const [SDGFilter, setSDGFilter] = useState(" ");
   const [isLoading, setIsLoading] = useState(true);
-
   const [userId, setUserId] = useState(" ");
   const [fullName, setFullName] = useState(" ");
 
@@ -56,7 +53,7 @@ function MainScreen({ navigation }: { navigation: any }) {
         );
       case 'Settings':
         return (
-          <SettingsComponent navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} setFullName={setFullName}/>
+          <SettingsComponent navigation={navigation} isLoading={isLoading} setIsLoading={setIsLoading} setFullName={setFullName} />
         );
       default:
         return (
@@ -70,11 +67,9 @@ function MainScreen({ navigation }: { navigation: any }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{fullName}</Text>
-
       <View style={styles.overlay}>
         {renderContent()}
       </View>
-
       <View style={styles.navigation}>
         <TouchableHighlight
           style={[
@@ -85,7 +80,6 @@ function MainScreen({ navigation }: { navigation: any }) {
         >
           <Text style={styles.iconText}>🌐</Text>
         </TouchableHighlight>
-
         <TouchableHighlight
           style={[
             styles.icon,
@@ -95,7 +89,6 @@ function MainScreen({ navigation }: { navigation: any }) {
         >
           <Text style={styles.iconText}>🗒️</Text>
         </TouchableHighlight>
-
         <TouchableHighlight
           style={[
             styles.icon,

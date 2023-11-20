@@ -45,9 +45,6 @@ const IssuesComponent = ({
     try {
       setFullName(await AsyncStorage.getItem('fullName') ?? '');
       setUserId(await AsyncStorage.getItem('userId') ?? '');
-
-      console.log('Full Name:', fullName);
-      console.log('User ID:', userId);
     } catch (error) {
       console.error('Error loading data:', error);
     }
@@ -58,17 +55,12 @@ const IssuesComponent = ({
     const fetchIssues = async () => {
       try {
         setIsLoading(true);
-
-        // Fetch all issues
         const response = await fetch('http://localhost:3001/issues');
         if (response.ok) {
           const data = await response.json();
-
-          // Check if the current user has favorited each issue
           const initialFavoritedIssues = data.issues
             .filter((issue: { favouritedUsers: string | string[]; }) => issue.favouritedUsers.includes(userId))
             .map((issue: { _id: any; }) => issue._id);
-
           setFavoritedIssues(initialFavoritedIssues);
           setIssues(data.issues);
         } else {
@@ -80,11 +72,8 @@ const IssuesComponent = ({
         setIsLoading(false);
       }
     };
-
     fetchIssues();
   }, [isFocused]);
-
-
   const cropText = (text: string) => {
     if (text.length > 100) {
       return text.substring(0, 100) + '...';
@@ -108,14 +97,11 @@ const IssuesComponent = ({
 
       if (response.ok) {
         const data = await response.json();
-
-        // If the issue is already favorited, remove it from the list
         if (favoritedIssues.includes(issueId)) {
           setFavoritedIssues((prevFavoritedIssues) =>
             prevFavoritedIssues.filter((favIssueId) => favIssueId !== issueId)
           );
         } else {
-          // If the issue is not favorited, add it to the list
           setFavoritedIssues((prevFavoritedIssues) => [...prevFavoritedIssues, issueId]);
         }
       } else {
@@ -126,17 +112,15 @@ const IssuesComponent = ({
     }
   };
 
-
   const sortedIssues = issues.sort((a, b) => {
     const aFavorited = favoritedIssues.includes(a._id);
     const bFavorited = favoritedIssues.includes(b._id);
-
     if (aFavorited && !bFavorited) {
       return -1;
     } else if (!aFavorited && bFavorited) {
       return 1;
     } else {
-      return b.createdDate - a.createdDate; // Fallback to createdDate sorting
+      return b.createdDate - a.createdDate;
     }
   });
 
@@ -150,7 +134,6 @@ const IssuesComponent = ({
       : sortedIssues.filter((issue) =>
         issue.selectedSDGs.some((sdg) => sdg.includes(SDGFilter))
       );
-
 
   return (
     <View>

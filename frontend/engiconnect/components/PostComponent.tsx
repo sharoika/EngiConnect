@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-function PostReplyComponent({ type, navigation, isLoading, setIsLoading }: { type: string, navigation: any, isLoading: any, setIsLoading: any }) {
+function PostComponent({ type, navigation, isLoading, setIsLoading }: { type: string, navigation: any, isLoading: any, setIsLoading: any }) {
   const backgroundColor = 'lightgreen';
   const text = type == "Post" ? 'Post' : 'Reply';
 
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostReplyComponent;
+export default PostComponent;

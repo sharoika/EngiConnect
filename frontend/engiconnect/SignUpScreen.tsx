@@ -15,20 +15,17 @@ function SignUpScreen({ navigation }: { navigation: any }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState(" ");
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = () => {
-
-    setErrorMessage(" ");
+    setErrorMessage("");
     setLoading(true);
-
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match");
       setLoading(false);
       return;
     }
-
     axios.post("http://localhost:3001/signup", { email, firstName, lastName, password })
       .then((response) => {
         if (response.status === 200) {
@@ -53,7 +50,7 @@ function SignUpScreen({ navigation }: { navigation: any }) {
     <View style={styles.container as any}>
       <Text style={styles.title as any}>EngiConnect Sign Up</Text>
       {errorMessage ? <Text style={styles.errorText as any}>{errorMessage}</Text> : null}
-      {successMessage ? <Text style={styles.successText as any}>{successMessage}</Text> : null }
+      {successMessage ? <Text style={styles.successText as any}>{successMessage}</Text> : null}
       <TextInput
         style={styles.input as any}
         placeholder="Email"

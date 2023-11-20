@@ -92,11 +92,11 @@ const SettingsComponent = ({ navigation, isLoading, setIsLoading, setFullName }:
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...userData, isVerified: true }), // Set isVerified to true
+        body: JSON.stringify({ ...userData, isVerified: true }),
       });
 
       if (response.ok) {
-        loadUserData(); // Update local user data
+        loadUserData();
         showMessage('Verification status updated', 'green');
       } else {
         console.error('Error updating verification status:', response.status);

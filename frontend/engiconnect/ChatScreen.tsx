@@ -2,49 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 
-console.log("4")
-export const socket = io("http://localhost:3002", {
+export const socket = io("http://localhost:3001", {
   autoConnect: false
 });
 
 const ChatScreen = ({ route, navigation }: { route: any, navigation: any }) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   const { userId, fullName } = route.params;
-  console.log("chatScreenUserId: " + userId);
-  console.log("chatScreenFullName: " + fullName);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-
+  
   useEffect(() => {
     const handleConnect = () => {
       console.log('Connected to server');
     };
-
     const handleDisconnect = () => {
       console.log('Disconnected from server');
     };
-
-    const handleError = (error) => {
+    const handleError = (error: any) => {
       console.error('Socket connection error:', error);
     };
-
-    // Connect to the socket when the component mounts
     socket.connect();
-
-    // Listen for connection, disconnection, and error events
     socket.on('connect', handleConnect);
     socket.on('disconnect', handleDisconnect);
     socket.on('connect_error', handleError);
-
     socket.on('message', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
-
     return () => {
-      // Disconnect the socket when the component unmounts
       socket.disconnect();
       console.log('Socket disconnected');
-
-      // Remove the event listeners
       socket.off('connect', handleConnect);
       socket.off('disconnect', handleDisconnect);
       socket.off('connect_error', handleError);
@@ -52,7 +44,6 @@ const ChatScreen = ({ route, navigation }: { route: any, navigation: any }) => {
   }, []);
 
   const onSend = () => {
-    // Send the new message to the server
     socket.emit('message', { text: newMessage, user: { _id: userId, name: fullName } });
     setNewMessage('');
   };
@@ -72,7 +63,6 @@ const ChatScreen = ({ route, navigation }: { route: any, navigation: any }) => {
           </View>
         )}
       />
-
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -84,7 +74,6 @@ const ChatScreen = ({ route, navigation }: { route: any, navigation: any }) => {
           <Text style={styles.buttonText}>Send</Text>
         </TouchableOpacity>
       </View>
-
       <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
         <Text style={styles.buttonText}>Back</Text>
       </TouchableOpacity>
@@ -95,6 +84,7 @@ const ChatScreen = ({ route, navigation }: { route: any, navigation: any }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 40,
     padding: 16,
   },
   inputContainer: {

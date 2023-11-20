@@ -11,30 +11,16 @@ const client = new MongoClient(process.env.DB_URI);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const http = require('http');
-const server = http.createServer(app);
 const { Server } = require("socket.io");
+const io = new Server({});
 
-const io = new Server({
-  cors: {
-    origin: "http://localhost:3000"
-  }
-});
-
-io.listen(3002);
-
+io.listen(3001);
 io.on('connection', (socket) => {
   console.log('A user connected');
-
-  // Listen for incoming messages
   socket.on('message', (message) => {
     console.log('Received message:', message);
-
-    // Broadcast the message to all connected clients
     io.emit('message', message);
   });
-
-  // Handle disconnection
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
@@ -46,7 +32,6 @@ app.post("/login", async (req, res) => {
     await client.connect();
     const usersCollection = client.db("engiconnect").collection("users");
     const user = await usersCollection.findOne({ email, password });
-    //await client.close();
     if (user) {
       console.log("Login successful.");
       res.status(200).json({ message: "Login successful.", userId: user._id, fullName: (user.firstName + " " + user.lastName) });
@@ -91,7 +76,6 @@ app.post('/signup', async (req, res) => {
       password,
     };
     const result = await usersCollection.insertOne(newUser);
-    //await client.close();
     if (result.insertedId) {
       console.log("User registered successfully.");
       res.status(200).json({ message: 'User registered successfully.' });
@@ -111,7 +95,6 @@ app.get('/user/:id', async (req, res) => {
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
-    //await client.close();
     if (user) {
       res.status(200).json(user);
     } else {
@@ -130,24 +113,19 @@ app.put('/user/:id', async (req, res) => {
     await client.connect();
     const usersCollection = client.db('engiconnect').collection('users');
     const user = await usersCollection.findOne({ _id: new ObjectId(userId) });
-
     if (!user) {
       res.status(404).json({ message: 'User not found' });
     } else {
       const { _id, ...userDataWithoutId } = updatedUserData;
-
       const isDataUpdated = Object.keys(userDataWithoutId).every(
         key => {
           return key === 'isVerified' || user[key] === userDataWithoutId[key];
         }
       );
-
       if (!isDataUpdated) {
         userDataWithoutId.isVerified = false;
       }
-
       const isVerifiedUpdated = user.isVerified == userDataWithoutId.isVerified;
-
       if (isDataUpdated && isVerifiedUpdated) {
         res.status(200).json({ message: 'User data is already up to date' });
       } else {
@@ -155,9 +133,6 @@ app.put('/user/:id', async (req, res) => {
           { _id: new ObjectId(userId) },
           { $set: userDataWithoutId }
         );
-
-        //await client.close();
-
         if (result.modifiedCount === 1) {
           res.status(200).json({ message: 'User data updated successfully' });
         } else {
@@ -175,12 +150,8 @@ app.get('/issues', async (req, res) => {
   try {
     await client.connect();
     const issuesCollection = client.db('engiconnect').collection('issues');
-
     const query = {};
-
     const issues = await issuesCollection.find(query).sort({ createdDate: -1 }).toArray();
-    //await client.close();
-
     res.status(200).json({ issues });
   } catch (error) {
     console.error('Error getting issues:', error);
@@ -190,14 +161,11 @@ app.get('/issues', async (req, res) => {
 
 app.get('/issue/:id', async (req, res) => {
   const issueId = req.params.id;
-
   try {
     await client.connect();
     const issuesCollection = client.db('engiconnect').collection('issues');
-
     const query = { _id: ObjectId(issueId) };
     const issue = await issuesCollection.findOne(query);
-
     if (issue) {
       res.status(200).json({ issue });
     } else {
@@ -212,13 +180,10 @@ app.get('/issue/:id', async (req, res) => {
 app.post('/issue', async (req, res) => {
   try {
     const { subjectText, bodyText, selectedSDGs, userId, fullName } = req.body;
-
     await client.connect();
     const issuesCollection = client.db('engiconnect').collection('issues');
-
     const createdDate = Date.now();
     var favouritedUsers = [];
-
     const newIssue = {
       subject: subjectText,
       body: bodyText,
@@ -228,10 +193,7 @@ app.post('/issue', async (req, res) => {
       createdDate,
       favouritedUsers,
     };
-
     const result = await issuesCollection.insertOne(newIssue);
-    //await client.close();
-
     if (result.insertedId) {
       res.status(200).json({ message: `Created successfully`, _id: result.insertedId });
     } else {
@@ -246,24 +208,18 @@ app.post('/issue', async (req, res) => {
 app.post('/issue/:id', async (req, res) => {
   const issueId = req.params.id;
   const userId = req.body.userId;
-
   try {
     await client.connect();
     const issuesCollection = client.db('engiconnect').collection('issues');
-
     const query = { _id: ObjectId(issueId) };
     const issue = await issuesCollection.findOne(query);
-
     if (issue) {
       const isFavorited = issue.favouritedUsers.includes(userId);
-
       if (isFavorited) {
         await issuesCollection.updateOne(query, { $pull: { favouritedUsers: userId } });
       } else {
         await issuesCollection.updateOne(query, { $push: { favouritedUsers: userId } });
       }
-
-      // Retrieve the updated issue
       const updatedIssue = await issuesCollection.findOne(query);
       res.status(200).json({ issue: updatedIssue, isFavorited: !isFavorited });
     } else {
@@ -278,21 +234,15 @@ app.post('/issue/:id', async (req, res) => {
 app.post('/reply', async (req, res) => {
   try {
     const { issueId, userId, fullName, replyText } = req.body;
-
     await client.connect();
-
     const repliesCollection = client.db('engiconnect').collection('replies');
-
     const newReply = {
       issueId,
       userId,
       fullName,
       replyText,
     };
-
     const result = await repliesCollection.insertOne(newReply);
-    //await client.close();
-
     if (result.insertedId) {
       res.status(200).json({ message: 'Reply added successfully', _id: result.insertedId });
     } else {
@@ -307,12 +257,9 @@ app.post('/reply', async (req, res) => {
 app.get('/replies/:issueId', async (req, res) => {
   try {
     const { issueId } = req.params;
-
     await client.connect();
-
     const repliesCollection = client.db('engiconnect').collection('replies');
     const replies = await repliesCollection.find({ issueId: issueId }).toArray();
-
     res.status(200).json({ replies });
   } catch (error) {
     console.error('Error fetching replies:', error);
@@ -324,26 +271,20 @@ app.post('/interaction', async (req, res) => {
   try {
     var { userId, issueId, hasRead, hasLiked, hasDisliked } = req.body;
     hasRead = true;
-
     await client.connect();
-
     const interactionsCollection = client.db('engiconnect').collection('interactions');
     const existingInteraction = await interactionsCollection.findOne({ userId, issueId });
-
     if (hasLiked == null) {
       hasLiked = existingInteraction?.hasLiked ?? false;
     }
-
     if (hasDisliked == null) {
       hasDisliked = existingInteraction?.hasDisliked ?? false;
     }
-
     if (existingInteraction) {
       await interactionsCollection.updateOne(
         { userId, issueId },
         { $set: { hasRead, hasLiked, hasDisliked } }
       );
-
       const updatedInteraction = await interactionsCollection.findOne({ userId, issueId });
       res.status(200).json({ message: 'Interaction record updated successfully', interaction: updatedInteraction });
     } else {
@@ -354,8 +295,6 @@ app.post('/interaction', async (req, res) => {
         hasLiked,
         hasDisliked,
       });
-
-      // Fetch the inserted record
       const insertedInteraction = await interactionsCollection.findOne({ userId, issueId });
       res.status(200).json({ message: 'Interaction record inserted successfully', interaction: insertedInteraction });
     }
@@ -370,13 +309,8 @@ app.get('/interaction/count/:issueId', async (req, res) => {
     const issueId = req.params.issueId;
     await client.connect();
     const interactionsCollection = client.db('engiconnect').collection('interactions');
-
     const likeCount = await interactionsCollection.countDocuments({ issueId, hasLiked: true });
     const dislikeCount = await interactionsCollection.countDocuments({ issueId, hasDisliked: true });
-
-    // Close the connection after fetching the counts
-    // await client.close();
-
     res.status(200).json({ likeCount, dislikeCount });
   } catch (error) {
     console.error('Error getting interaction counts:', error);

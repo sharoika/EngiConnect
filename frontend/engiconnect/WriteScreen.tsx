@@ -9,8 +9,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
     });
   }, [navigation]);
 
-  const { setIsLoading } = route.params;
-
   const [subjectText, setSubjectText] = useState("");
   const [bodyText, setBodyText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -20,7 +18,7 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
   AsyncStorage.getItem('userId').then(ui => {
     userId = ui ?? "";
   });
-  
+
   var fullName = "";
   AsyncStorage.getItem('fullName').then(fn => {
     fullName = fn ?? "";
@@ -52,7 +50,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
 
   const handleSelectSDG = (item: string) => {
     const updatedSDGs = [...selectedSDGs];
-
     if (updatedSDGs.includes(item)) {
       updatedSDGs.splice(updatedSDGs.indexOf(item), 1);
     } else {
@@ -63,7 +60,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
         updatedSDGs.push(item);
       }
     }
-
     setSelectedSDGs(updatedSDGs);
   };
 
@@ -73,7 +69,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
 
   const handlePostReply = () => {
     const apiUrl = 'http://localhost:3001/issue';
-
     const postData = {
       subjectText,
       bodyText,
@@ -81,7 +76,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
       userId,
       fullName,
     };
-
     fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -108,7 +102,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
         onChangeText={(text) => setSubjectText(text)}
         placeholder="Enter subject"
       />
-
       <Text style={styles.label as any}>Body:</Text>
       <TextInput
         style={styles.bodyInput as any}
@@ -118,7 +111,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
         multiline={true}
         numberOfLines={4}
       />
-
       <Text style={styles.label as any}>Select SDGs:</Text>
       <TouchableOpacity style={styles.dropdownButton as any} onPress={toggleModal}>
         {selectedSDGs.length > 0 ? (
@@ -129,7 +121,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
           <Text>Select SDGs...</Text>
         )}
       </TouchableOpacity>
-
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modalContainer as any}>
           <FlatList
@@ -152,7 +143,6 @@ function WriteScreen({ route, navigation }: { route: any, navigation: any }) {
           </TouchableOpacity>
         </View>
       </Modal>
-
       <View style={styles.buttonContainer as any}>
         <TouchableOpacity style={styles.closeButton as any} onPress={handleGoBack}>
           <Text style={styles.buttonText as any}>Back</Text>

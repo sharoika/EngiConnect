@@ -40,41 +40,32 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
             body: JSON.stringify({ userId: userId, issueId: issueId, hasRead: true }),
           }),
         ]);
-
         const [issueData, repliesData, interactionData] = await Promise.all([
           issueResponse.json(),
           repliesResponse.json(),
           interactionResponse.json(),
         ]);
-
         if (issueResponse.ok && repliesResponse.ok && interactionResponse.ok) {
           setIssue(issueData.issue);
-          console.log(interactionData.interaction)
-          console.log("hasLiked: " + interactionData.interaction.hasLiked);
-          console.log("hasDisliked: " + interactionData.interaction.hasDisliked);
           setHasLiked(interactionData.interaction.hasLiked);
           setHasDisliked(interactionData.interaction.hasDisliked);
           setReplies(repliesData.replies);
         } else {
           console.error('Error fetching issue, replies, or interactions:', issueData.message || repliesData.message || interactionData.interaction);
         }
-
         setLoaded(true);
       } catch (error) {
         console.error('Error fetching issue, replies, or interactions:', error);
         setLoaded(true);
       }
     };
-
     fetchIssueAndReplies();
   }, [issueId, userId]);
 
-  // Add this function in your ReadScreen component
   const fetchInteractionCounts = async () => {
     try {
       const response = await fetch(`http://localhost:3001/interaction/count/${issueId}`);
       const data = await response.json();
-
       if (response.ok) {
         setLikeCount(data.likeCount);
         setDislikeCount(data.dislikeCount);
@@ -89,7 +80,6 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
   const handleReply = async () => {
     try {
       toggleFavorite(issue._id);
-
       const response = await fetch('http://localhost:3001/reply', {
         method: 'POST',
         headers: {
@@ -102,9 +92,7 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           replyText: newReply,
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         const newReplyObject: Reply = {
           issueId: issue._id,
@@ -112,7 +100,6 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           fullName: fullName,
           replyText: newReply,
         };
-
         setReplies((prevReplies) => [...prevReplies, newReplyObject]);
         setNewReply("");
       } else {
@@ -160,15 +147,13 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           userId: userId,
           issueId: issueId,
           hasRead: true,
-          hasLiked: !hasLiked, // Toggle the value directly
+          hasLiked: !hasLiked,
           hasDisliked: false,
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        fetchInteractionCounts(); // Move the fetchInteractionCounts here
+        fetchInteractionCounts();
       } else {
         console.error('Error liking issue:', data.message);
       }
@@ -191,14 +176,12 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           issueId: issueId,
           hasRead: true,
           hasLiked: false,
-          hasDisliked: !hasDisliked, // Toggle the value directly
+          hasDisliked: !hasDisliked,
         }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        fetchInteractionCounts(); // Move the fetchInteractionCounts here
+        fetchInteractionCounts();
       } else {
         console.error('Error disliking issue:', data.message);
       }
@@ -206,7 +189,6 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
       console.error('Error disliking issue:', error);
     }
   };
-
 
   if (!loaded) {
     return (
@@ -241,7 +223,6 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           </Text>
         </ScrollView>
       </View>
-
       {Array.isArray(replies) ? (
         <View style={styles.scrollContainerReplies}>
           <FlatList
@@ -260,7 +241,6 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           <Text>No replies available</Text>
         </View>
       )}
-
       <View style={styles.additionalInfoContainer}>
         <View style={[styles.countContainer, { backgroundColor: 'lightblue' }]}>
           <Text style={styles.countText}>Likes: {likeCount}</Text>
@@ -269,8 +249,6 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           <Text style={styles.countText}>Dislikes: {dislikeCount}</Text>
         </View>
       </View>
-
-
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -282,16 +260,13 @@ function ReadScreen({ route, navigation }: { route: any; navigation: any }) {
           <Text style={styles.buttonText}>Add Reply</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.bottomButtonContainer}>
         <TouchableOpacity style={[styles.bottomButton, { backgroundColor: hasLiked ? 'blue' : 'lightblue' }]} onPress={handleLike}>
           <Text style={styles.buttonText}>{hasLiked ? 'Liked' : 'Like'}</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={[styles.bottomButton, { backgroundColor: hasDisliked ? 'orange' : "#FED8B1" }]} onPress={handleDislike}>
           <Text style={styles.buttonText}>{hasDisliked ? 'Disliked' : 'Dislike'}</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={[styles.bottomButton, { backgroundColor: 'red' }]} onPress={handleGoBack}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
