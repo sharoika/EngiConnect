@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 const { Server } = require("socket.io");
 const io = new Server({});
 
-io.listen(3001);
+io.listen(3002);
 io.on('connection', (socket) => {
   console.log('A user connected');
   socket.on('message', (message) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, FlatList, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 
-export const socket = io("http://localhost:3001", {
+export const socket = io("http://localhost:3002", {
   autoConnect: false
 });
 
