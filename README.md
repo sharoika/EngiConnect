@@ -5,6 +5,51 @@
 # EngiConnect
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
+# Installation
+
+***Please start at the root directory of the 'engiconnect/' folder.***
+
+### Backend (Node.js Application) Installation Guide:
+1. Run: `cd engiconnect/backend` to navigate to the backend directory. 
+2. Run: `npm install` to install the required packages.
+3. Create a .env File:
+
+Inside the 'backend' folder, create a file named .env.
+Add the following line to the .env file:
+perl
+Copy code
+DB_URI=mongodb+srv://engiconnect:ElMtgFYw1Bo4z4fh@cluster0.mbccgqx.mongodb.net/
+Run the Application:
+
+Execute npm start to start the backend server.
+Frontend (React Native) Installation and Setup Guide:
+Navigate to the 'engiconnect' folder.
+
+Run cd engiconnect
+Install Dependencies:
+
+Run npm install to install the required packages.
+Start the Expo Development Server:
+
+Execute expo start to start the Expo development server.
+Update Backend URL in React Native App:
+
+Open your React Native project in the code editor.
+Locate the file handling API requests (e.g., api.js or services.js).
+Update the API URL to point to your backend.
+Run the React Native App:
+
+If using an emulator, type e in the terminal to open the app in the emulator.
+If using a physical device, scan the QR code using the Expo Go app.
+
+
+
+
+
+
+
+# Documentation
+
 ### Project Planning Video:
 [Project Planning Video](https://youtu.be/eihzUJq9vtk)
 ### Project Scrum 1 Video:
@@ -38,11 +83,9 @@ C. [Entity Relationship Diagram](https://github.com/sharoika/EngiConnect/blob/18
 5. Drafting an Emerging Picture
 6. Project Scope Statement
 7. Project Requirements
-8. Activity Based Schedule
+8. Activity-Based Schedule
 
-#### Installation
-
-### License
+# License
 
 Shield: [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
