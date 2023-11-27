@@ -5,48 +5,38 @@
 # EngiConnect
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
+### [EngiConnect Commercial - TO DO]()
+
+### [EngiConnect Final Presentation - TO DO]()
+
 # Installation
 
 ***Please start at the root directory of the 'engiconnect/' folder.***
 
 ### Backend (Node.js Application) Installation Guide:
-1. Run: `cd engiconnect/backend` to navigate to the backend directory. 
-2. Run: `npm install` to install the required packages.
-3. Create a .env File:
 
-Inside the 'backend' folder, create a file named .env.
-Add the following line to the .env file:
-perl
-Copy code
-DB_URI=mongodb+srv://engiconnect:(password)@(cluster).mongodb.net/
-Run the Application:
+1. Navigate to the 'engiconnect/backend' folder:
+    1. Run `cd engiconnect/backend` to navigate to the backend directory. 
+2. Install Dependencies:
+    1. Run `npm install` to install the required packages.
+3. Create a ".env" File:
+    1. Inside the 'backend' folder, create a file named ".env".
+    2. Add the following line to the ".env" file: `DB_URI=mongodb+srv://engiconnect:(password)@(cluster).mongodb.net/`.
+4. Run the Application:
+    1. Execute `npm start` to start the backend server.
+    2. The application is now running on `localhost:3001`.
+  
+### Frontend (React Native) Installation and Setup Guide:
 
-Execute npm start to start the backend server.
-Frontend (React Native) Installation and Setup Guide:
-Navigate to the 'engiconnect' folder.
-
-Run cd engiconnect
-Install Dependencies:
-
-Run npm install to install the required packages.
-Start the Expo Development Server:
-
-Execute expo start to start the Expo development server.
-Update Backend URL in React Native App:
-
-Open your React Native project in the code editor.
-Locate the file handling API requests (e.g., api.js or services.js).
-Update the API URL to point to your backend.
-Run the React Native App:
-
-If using an emulator, type e in the terminal to open the app in the emulator.
-If using a physical device, scan the QR code using the Expo Go app.
-
-
-
-
-
-
+1. Navigate to the 'engiconnect/frontend' folder:
+    1. Run `cd engiconnect/frontend`.
+2. Install Dependencies:
+    1. Run `npm install` to install the required packages.
+3. Start the Development Server:
+    1. Execute `npx start`; or any other React Native start CLI command.
+        1. If using an emulator, type e in the terminal to open the app in the emulator.
+        2. If using a physical device, scan the QR code using the Expo Go app.
+    3. The application is using `localhost:3001` for backend API requests.
 
 # Documentation
 
