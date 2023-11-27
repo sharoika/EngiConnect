@@ -13,6 +13,15 @@ An application to connect Engineers, Academics, and Professionals with problems 
 
 ***Please start at the root directory of the 'engiconnect/' folder.***
 
+#### Requirments:
+1. Node.js and npm
+2. React Native
+3. MongoDB (Atlas)
+4. Code Editor (e.g., Visual Studio Code)
+5. Git
+6. (Optional) MongoDB Compass
+7. (Optional) Postman
+
 ### Backend (Node.js Application) Installation Guide:
 
 1. Navigate to the 'engiconnect/backend' folder:
