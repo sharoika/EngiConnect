@@ -5,9 +5,11 @@
 # EngiConnect
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
-### [EngiConnect Commercial - TO DO]()
-
-### [EngiConnect Final Presentation - TO DO]()
+#### [EngiConnect Commercial - TO DO]()
+#### [EngiConnect Final Presentation - TO DO]()
+#### [Final Status Report - TO DO]()
+#### [Concepts from Lectures Document - TO DO]()
+#### [Report Out and Lessons Learned - TO DO]()
 
 # Installation
 
