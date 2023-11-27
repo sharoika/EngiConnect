@@ -18,7 +18,7 @@ Inside the 'backend' folder, create a file named .env.
 Add the following line to the .env file:
 perl
 Copy code
-DB_URI=mongodb+srv://engiconnect:ElMtgFYw1Bo4z4fh@cluster0.mbccgqx.mongodb.net/
+DB_URI=mongodb+srv://engiconnect:(password)@(cluster).mongodb.net/
 Run the Application:
 
 Execute npm start to start the backend server.
