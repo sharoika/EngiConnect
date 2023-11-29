@@ -46,7 +46,6 @@ const IssuesComponent = ({
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        console.log("hithere");
         setIsLoading(true);
         const response = await fetch('http://localhost:3001/issues');
         if (response.ok) {
