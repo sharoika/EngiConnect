@@ -7,6 +7,7 @@ An application to connect Engineers, Academics, and Professionals with problems 
 
 #### [EngiConnect Commercial - TO DO]()
 #### [EngiConnect Final Presentation](https://docs.google.com/presentation/d/1qV8FeNWH7LnFtAYCyri5BKTFKRH-IiMWUH-E18p9oK8/edit?usp=sharing)
+#### [EngiConnect Final Demo](https://youtu.be/jM4ySTwsNYE)
 #### [Final Status Report - TO DO]()
 #### [Concepts from Lectures Document - TO DO]()
 #### [Report Out and Lessons Learned - TO DO]()
