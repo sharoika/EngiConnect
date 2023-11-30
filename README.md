@@ -6,7 +6,7 @@
 An application to connect Engineers, Academics, and Professionals with problems related to the UN's SDGs' to others with possible novel or creative solutions.
 
 #### [EngiConnect Commercial - TO DO]()
-#### [EngiConnect Final Presentation - TO DO]()
+#### [EngiConnect Final Presentation](https://docs.google.com/presentation/d/1qV8FeNWH7LnFtAYCyri5BKTFKRH-IiMWUH-E18p9oK8/edit?usp=sharing)
 #### [Final Status Report - TO DO]()
 #### [Concepts from Lectures Document - TO DO]()
 #### [Report Out and Lessons Learned - TO DO]()
