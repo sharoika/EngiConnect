@@ -8,9 +8,9 @@ An application to connect Engineers, Academics, and Professionals with problems 
 #### [EngiConnect Commercial](https://www.youtube.com/watch?v=D9uWKsz7uzI&ab_channel=MaksimSharoika)
 #### [EngiConnect Final Presentation](https://docs.google.com/presentation/d/1qV8FeNWH7LnFtAYCyri5BKTFKRH-IiMWUH-E18p9oK8/edit?usp=sharing)
 #### [EngiConnect Final Demo](https://youtu.be/jM4ySTwsNYE)
-#### [Final Status Report - TO DO]()
-#### [Concepts from Lectures Document - TO DO]()
-#### [Report Out and Lessons Learned - TO DO]()
+#### [Final Status Report](https://github.com/sharoika/EngiConnect/blob/main/Final%20Documents/PDFs/Project%20Status%20Report.pdf)
+#### [Concepts from Lectures Document](https://github.com/sharoika/EngiConnect/blob/main/Final%20Documents/PDFs/Ideas%20and%20Concepts%20Implemented.pdf)
+#### [Report Out and Lessons Learned](https://github.com/sharoika/EngiConnect/blob/main/Final%20Documents/PDFs/Project%20Report%20and%20Lessons%20Learned.pdf)
 
 # Installation
 
